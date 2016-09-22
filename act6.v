@@ -19,8 +19,11 @@ module pc (input clk, input [31:0] nextPC, output [31:0] currPC);
    //Modeling delay 
    assign #5 currPC = temp;
    //Modeling logic
-   always @(posedge clk)
+   always @(posedge clk) 
+     begin
 	temp = nextPC;
+     end
+   
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +32,9 @@ endmodule
 
 module add4(input [31:0] inval, output [31:0] outval);
    assign #100 outval = inval + 4;
+   always @(*)
+     $display("From PC+4: %h %h", inval, outval);
+   
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +98,7 @@ module control(input [31:0] instruction,
          #50 ALUSrc <= 1;
        end
        `ORI: begin
-	  $display("%b: ORI", opcode);
+	 $display("%b: ORI", opcode);
 	 #50 ALUop <= 3'b001;
          #50 RegWrite <= 1;
          #50 ALUSrc <= 1;
@@ -237,9 +243,7 @@ module ALU(input [31:0] read_data_1,
 	      temp = read_data_2_or_immediate;
          end
 	 default: $display("That's not a supported ALUop!");
-       endcase // case (ALU_control)
-       $display("%d", temp);
-       
+       endcase
        if (ALU_result == 0)
 	 zero = 1;
        else
@@ -286,6 +290,9 @@ module mux(input [31:0] in1,
 	   input select,
 	   output [31:0] out);
    assign #30 out = (select)? in1 : in2;
+   always @(*)
+		    $display("From jump mux: %h %h %h %h", select, in1, in2,  out);
+   
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -294,25 +301,26 @@ endmodule
 
 module test;
    reg clk;
-   wire [31:0] curr_addr;
-   wire [31:0] pc_plus4;
-   wire [31:0] next_addr;
+   wire [31:0] curr_addr = 31'h00400020;
+   wire [31:0] pc_plus4 = 31'h00400024;
+   wire [31:0] next_addr = 31'h00400024;
    wire [31:0] instruction;
-   wire     regdst;
-   wire  jump;
-   wire  brnch;
-   wire  memread;
-   wire  memtoreg;
-   wire [2:0] aluop;
-   wire    regwrite;
-   wire    alusrc;
-   wire    memwrite;
-   wire [31:0] alu_out;
-   wire [31:0] reg_out_1;
-   wire [31:0] reg_out_2;
-   wire [31:0] data_out;
-   wire [31:0] alu_out_2;
-   wire        discard;
+   wire        regdst = 0;
+   wire        jump = 0;
+   wire        brnch = 0;
+   wire        memread = 0;
+   wire        memtoreg = 0;
+   wire [2:0]  aluop = 0;
+   wire        regwrite = 0;
+   wire        alusrc = 0;
+   wire        memwrite = 0;
+   wire [31:0] alu_out = 0;
+   wire [31:0] reg_out_1 = 0;
+   wire [31:0] reg_out_2 = 0;
+   wire [31:0] data_out = 0;
+   wire [31:0] alu_out_2 = 0;
+   wire        discard = 0;
+   wire        zero = 0;        
    
    pc thePC(clk,
 	    next_addr,
