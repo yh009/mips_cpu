@@ -32,9 +32,6 @@ endmodule
 
 module add4(input [31:0] inval, output [31:0] outval);
    assign #100 outval = inval + 4;
-   always @(*)
-     $display("From PC+4: %h %h", inval, outval);
-   
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -290,9 +287,6 @@ module mux(input [31:0] in1,
 	   input select,
 	   output [31:0] out);
    assign #30 out = (select)? in1 : in2;
-   always @(*)
-		    $display("From jump mux: %h %h %h %h", select, in1, in2,  out);
-   
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -340,7 +334,7 @@ module test;
 	      alusrc,
 	      memwrite);
    mux jump_mux({pc_plus4[31:28], instruction[25:0], 2'b00}, 
-	      (brnch && zero) ? alu_out_2 : pc_plus_4,
+	      (brnch && zero) ? alu_out_2 : pc_plus4,
 	      jump,
 	      next_addr);
    data_memory dm(alu_out, 
@@ -372,6 +366,7 @@ module test;
    initial begin
       $monitor($time, " in %m, currPC = %08x, nextPC = %08x, inst = %08x.", 
 			curr_addr, next_addr, instruction);
+      
       #20000 $finish; 
    end
    always
