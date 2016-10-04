@@ -12,44 +12,31 @@
 //PC MODULE////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
-module pc (input clk, input [31:0] nextPC, output [31:0] currPC);
-   reg [31:0] temp;
-   initial
-   	temp = 31'h00400020;
-   //Modeling delay 
-   assign #5 currPC = temp;
-   //Modeling logic
-   always @(posedge clk) 
-     begin
-	temp = nextPC;
-     end
-   
+module pc (input clk, input [31:0] nextPC, output reg [31:0] currPC);
+   always @(posedge clk)
+     currPC = nextPC;
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //PC+4 MODULE//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
-module add4(input [31:0] inval, output [31:0] outval);
-   assign #100 outval = inval + 4;
+module add4(input [31:0] inval, output reg [31:0] outval);
+   always @(inval)
+     outval = inval + 4;
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //INSTRUCTION MEMORY MODULE////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
-module inst_memory(input [29:0] read_addr, output [31:0] memout);
-   reg [31:0] temp;
+module inst_memory(input [29:0] read_addr, output reg [31:0] memout);
    reg [31:0] mymem [32'h00100000 : 32'h00100100];
-   //Modeling delay
-   assign #250 memout = temp;
    initial
-     begin
-	$readmemh("add_test.v", mymem);
-     end
+     $readmemh("add_test.v", mymem);
    always @(*) 
      begin
-	temp = mymem[read_addr];
+	memout = mymem[read_addr];
 	if (memout == 0)
 	  begin
 	     $strobe("Found null op at addr %08x.", read_addr);
@@ -90,96 +77,96 @@ module control(input [31:0] instruction,
      case (opcode)
        `ADDI: begin
 	 $display("%b: ADDI", opcode);
-	 #50 ALUop <= 3'b010;
-         #50 RegWrite <= 1;
-         #50 ALUSrc <= 1;
+	 ALUop <= 3'b010;
+         RegWrite <= 1;
+         ALUSrc <= 1;
        end
        `ORI: begin
 	 $display("%b: ORI", opcode);
-	 #50 ALUop <= 3'b001;
-         #50 RegWrite <= 1;
-         #50 ALUSrc <= 1;
+	 ALUop <= 3'b001;
+         RegWrite <= 1;
+         ALUSrc <= 1;
        end
        `LW: begin
 	 $display("%b: LW", opcode);
-	 #50 MemRead <= 1;
-         #50 MemToReg <= 1;
-	 #50 ALUop <= 3'b010;
-         #50 RegWrite <= 1;
-         #50 ALUSrc <= 1;
+	 MemRead <= 1;
+         MemToReg <= 1;
+	 ALUop <= 3'b010;
+         RegWrite <= 1;
+         ALUSrc <= 1;
        end  
        `SW: begin
 	 $display("%b: SW", opcode);
-	 #50 ALUop <= 3'b010;
-         #50 ALUSrc <= 1;
-         #50 MemWrite <= 1;
+	 ALUop <= 3'b010;
+         ALUSrc <= 1;
+         MemWrite <= 1;
        end	  
        `BEQ: begin
 	 $display("%b: BEQ", opcode);
-	 #50 Branch <= 1;
-	 #50 ALUop <= 3'b110;
+	 Branch <= 1;
+	 ALUop <= 3'b110;
        end	  
        `BNE: begin
 	 $display("%b: BNE", opcode);
-	 #50 Branch <= 1;
-	 #50 ALUop <= 3'b110;
+	 Branch <= 1;
+	 ALUop <= 3'b110;
        end  
        `J: begin
 	 $display("%b: J", opcode);
-	 #50 Jump <= 1;
+	 Jump <= 1;
        end
        `JAL: begin
 	 $display("%b: JAL", opcode);
-	 #50 Jump <= 1;
+	 Jump <= 1;
        end
        `ADDIU: begin
 	 $display("%b: ADDIU", opcode);
-	 #50 ALUop <= 3'b010;
-	 #50 RegWrite <= 1;
-	 #50 ALUSrc <= 1;
+	 ALUop <= 3'b010;
+	 RegWrite <= 1;
+	 ALUSrc <= 1;
        end
        `SLTIU: begin
 	 $display("%b: SLTIU", opcode);
-	 #50 ALUop <= 3'b111;
-	 #50 RegWrite <= 1;
-	 #50 ALUSrc <= 1;
+	 ALUop <= 3'b111;
+	 RegWrite <= 1;
+	 ALUSrc <= 1;
        end
        `SPECIAL: begin
 	  $display("%b: SPECIAL", opcode);
 	  case (funct)
 	    `ADD: begin
 	       $display("%b: ADD", funct);
-	       #50 RegDst <= 1;
-	       #50 ALUop <= 3'b010;
-	       #50 RegWrite <= 1;
+	       RegDst <= 1;
+	       ALUop <= 3'b010;
+	       RegWrite <= 1;
 	    end
 	    `SUB: begin
 	       $display("%b: SUB", funct);
-               #50 RegDst <= 1;
-               #50 ALUop <= 3'b110;
-               #50 RegWrite <= 1;
+               RegDst <= 1;
+               ALUop <= 3'b110;
+               RegWrite <= 1;
 	    end
 	    `AND: begin
 	       $display("%b: AND", funct);
-               #50 RegDst <= 1;
-               #50 ALUop <= 3'b000;
-               #50 RegWrite <= 1;
+               RegDst <= 1;
+               ALUop <= 3'b000;
+               RegWrite <= 1;
 	    end
 	    `OR: begin
 	       $display("%b: OR", funct);
-               #50 RegDst <= 1;
-               #50 ALUop <= 3'b001;
-               #50 RegWrite <= 1;
+               RegDst <= 1;
+               ALUop <= 3'b001;
+               RegWrite <= 1;
 	    end
 	    `SLT: begin
 	       $display("%b: SLT", funct);
-               #50 RegDst <= 1;
-               #50 ALUop <= 3'b111;
-               #50 RegWrite <= 1;
+               RegDst <= 1;
+               ALUop <= 3'b111;
+               RegWrite <= 1;
 	    end
 	    `JR: begin
 	       $display("funct: %b: JR", funct);
-	       #50 Jump <= 1;
+	       Jump <= 1;
 	    end
 	    `SYSCALL:
 	       $display("funct: %b: SYSCALL", funct);
@@ -201,15 +188,13 @@ module registers(input [4:0] read_reg_1,
 		 input [4:0]   write_reg,
 		 input [31:0]  write_data,
 		 input reg_write,
-		 output [31:0] read_data_1,
-		 output [31:0] read_data_2);
+		 output reg [31:0] read_data_1,
+		 output reg [31:0] read_data_2);
    reg [31:0] 			 register_file [31:0];
-   //Modeling delay
-   assign #200 read_data_1 = register_file[read_reg_1];
-   assign #200 read_data_2 = register_file[read_reg_1];
-   assign #200 write_data = register_file[write_reg];
    always @(*) 
-	begin
+        begin
+           read_data_1 = register_file[read_reg_1];
+	   read_data_2 = register_file[read_reg_1];
 	   if (reg_write)
 	     register_file[write_reg] = write_data;
 	end
@@ -223,21 +208,20 @@ module ALU(input [31:0] read_data_1,
 	   input [31:0]  read_data_2_or_immediate,
 	   input [2:0] 	 ALU_control,
 	   output reg	 zero,
-	   output [31:0] ALU_result);
+	   output reg [31:0] ALU_result);
   reg [31:0] temp;
-  assign #120 ALU_result = temp;
   initial
     begin
        case (ALU_control)
-	 0: temp = read_data_1 & read_data_2_or_immediate;
-	 1: temp = read_data_1 | read_data_2_or_immediate;
-	 2: temp = read_data_1 + read_data_2_or_immediate;
-	 6: temp = read_data_1 - read_data_2_or_immediate;
+	 0: ALU_result = read_data_1 & read_data_2_or_immediate;
+	 1: ALU_result = read_data_1 | read_data_2_or_immediate;
+	 2: ALU_result = read_data_1 + read_data_2_or_immediate;
+	 6: ALU_result = read_data_1 - read_data_2_or_immediate;
 	 7: begin 
 	    if (read_data_1 < read_data_2_or_immediate)
-	      temp = read_data_1;
+	      ALU_result = read_data_1;
 	    else
-	      temp = read_data_2_or_immediate;
+	      ALU_result = read_data_2_or_immediate;
          end
 	 default: $display("That's not a supported ALUop!");
        endcase
@@ -256,18 +240,14 @@ module data_memory(input [31:0] address,
 		   input [31:0]  write_data,
 		   input 	 mem_write,
 		   input 	 mem_read,
-		   output [31:0] read_data);
-   reg [31:0] 			 temp;
+		   output reg [31:0] read_data);
    reg [31:0] mymem [32'h00100000 : 32'h00100100];
-   assign #350 read_data = temp;
    initial
-     begin
 	$readmemh("add_test.v", mymem);
-     end
    always @(*) 
 	begin
 	   if (mem_read)
-	     temp = mymem[address];
+	     read_data = mymem[address];
 	   if (mem_write)
 	     mymem[address] = write_data;
 	   if (read_data == 0)
@@ -285,12 +265,13 @@ endmodule
 module mux(input [31:0] in1,
 	   input [31:0]  in2,
 	   input select,
-	   output [31:0] out);
-   assign #30 out = (select)? in1 : in2;
+	   output reg [31:0] out);
+   always @(select)
+     out = (select)? in1 : in2;
 endmodule
 
 ///////////////////////////////////////////////////////////////////////////////////////
-//TEST MODULE///////////////////////////////////////////////////////////////////
+//TEST MODULE//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
 module test;
@@ -350,7 +331,7 @@ module test;
 		   reg_out_1, 
 		   reg_out_2);
    ALU alu(reg_out_1, 
-	   (ALUSrc) ? {{16{instruction[15]}}, instruction[15:0]} : reg_out_2, 
+	   (alusrc) ? {{16{instruction[15]}}, instruction[15:0]} : reg_out_2, 
 	   aluop, 
 	   zero, 
 	   alu_out);
