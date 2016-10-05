@@ -1,6 +1,6 @@
 `include "mips.h"
 
-module control(input [31:0] instruction,
+module control(input [31:0] instr,
 	       output reg RegDst,
 	       output reg Jump,
 	       output reg Branch,
@@ -10,8 +10,8 @@ module control(input [31:0] instruction,
 	       output reg RegWrite,
 	       output reg ALUSrc,
 	       output reg MemWrite);
-   wire [5:0] opcode = instruction [31:26];
-   wire [5:0] funct = instruction [5:0];
+   wire [5:0] opcode = instr [31:26];
+   wire [5:0] funct = instr [5:0];
    initial 
      begin
       RegDst = 1'b0;
@@ -24,7 +24,7 @@ module control(input [31:0] instruction,
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
      end
-   always @(instruction)
+   always @(instr)
      case (opcode)
        `ADDI: begin
 	 $display("%b: ADDI", opcode);
@@ -128,4 +128,53 @@ module control(input [31:0] instruction,
        default:
 	 $display("%b: That's not a supported instruction!", opcode);
      endcase
+endmodule // control
+
+
+module test;
+   reg [31:0] instr;
+   wire RegDst;
+   wire Jump;
+   wire Branch;
+   wire MemRead;
+   wire MemToReg;
+   wire [2:0] ALUop;
+   wire       RegWrite;
+   wire       ALUSrc;
+   wire       MemWrite;
+
+   control myControl(instr,RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+   
+   initial begin
+		#10 instr=`ADD;
+		#20 instr=`BNE;
+		#20 instr=`SUB;
+		#20 instr=`JR;
+		#20 instr=`AND;
+		#20 instr=`OR;
+		#20 instr=`SLT;
+		#20 instr=`JAL;
+		#20 instr=`ADDI;
+		#20 instr=`ORI;
+		#20 instr=`LW;
+		#20 instr=`SW;
+		#20 instr=`BEQ;
+		#20 instr=`J;
+		
+		
+		//#100 $finish;
+	end
+
+	initial begin
+		$monitor($time, " RegDst=%b,Jump=%b,Branch=%b,MemRead=%b,MemToReg=%b,ALUop=%b,RegWrite=%b,ALUSrc=%b,MemWrite=%b.",
+			 RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+		#10000 $finish;
+	end
+   //initial begin
+      //clk=0;
+   //end
+
+   //always #250 clk=~clk;
+
+
 endmodule
