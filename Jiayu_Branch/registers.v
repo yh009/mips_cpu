@@ -16,18 +16,6 @@ module registers(
  //   initial begin
  //   			register_file[2] = 32'd4;	/* $v0 */
 	// 		register_file[3] = 32'd5;	/* $v1 */
-	// 		// $display(" $v0,      $v1,      $t0,      $t1,      $t2,      $t3,      $t4,      $t5,      $t6,      $t7");
-	// 		// $monitor("%x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
-	// 		// 		register_file[2][31:0],	/* $v0 */
-	// 		// 		register_file[3][31:0],	/* $v1 */
-	// 		// 		register_file[8][31:0],	/* $t0 */
-	// 		// 		register_file[9][31:0],	/* $t1 */
-	// 		// 		register_file[10][31:0],	/* $t2 */
-	// 		// 		register_file[11][31:0],	/* $t3 */
-	// 		// 		register_file[12][31:0],	/* $t4 */
-	// 		// 		register_file[13][31:0],	/* $t5 */
-	// 		// 		register_file[14][31:0],	/* $t6 */
-	// 		// 		register_file[15][31:0],	/* $t7 */
 	// 		// 	);
 	// end
 
