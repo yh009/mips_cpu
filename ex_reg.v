@@ -1,12 +1,12 @@
 module ex_reg(
 input clk,
 input[31:0] rd1d,rd2d,signimmd,
-input fushe,regwrited,memtoregd,memwrited,alusrcd,regdstd,branchd,
+input flushe,regwrited,memtoregd,memwrited,alusrcd,regdstd,branchd,
 input [2:0] alucontrold,
 input [4:0] rsd,rtd,rdd,
 output regwritee,memtorege,memwritee,alusrce,regdste,
 output [2:0] alucontrole,
-output [31:0] rd1e, rd2e, signimme
+output [31:0] rd1e, rd2e, signimme,
 output [4:0] rse, rte, rde
 );
 reg [31:0] rd1, rd2, signimm;
@@ -29,7 +29,7 @@ assign rte = rt;
 assign rde = rd;
 
 always @(posedge clk) begin
-	if(flushe != 1) begin
+	if(!flushe) begin
 		 regwrite = regwrited;
 		 memtoreg = memtoregd;
 		 memwrite = memwrited;
