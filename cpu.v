@@ -1,55 +1,258 @@
-module cpu;
+module cpu();
+   //Wire/Reg Declarations
    reg clk;
+   ///////////////
+   //Fetch Stage//
+   ///////////////
+   wire [31:0] instrF;
+   wire [31:0] 	PCF;
+   wire [31:0] 	PC;
+   wire [31:0] PCPlus4F;
+   wire        StallF;
+   ////////////////
+   //Decode Stage//
+   ////////////////
+   wire [31:0] instrD;
+   wire [31:0] PCBranchD;
+   wire [31:0] PCPlus4D;
+   wire [31:0] RD1_D;
+   wire [31:0] RD2_D;
+   wire [31:0] SignImmD;
+   wire [4:0]  RdD = instrD[15:11];
+   wire [4:0]  RsD = instrD[25:21];
+   wire [4:0]  RtD = instrD[20:16];
+   wire [2:0]  ALUControlD;
+   wire        ALUSrcD;
+   wire        BranchD;
+   wire        EqualD1;
+   wire        EqualD2;
+   wire        ForwardAD;
+   wire        ForwardBD;
+   wire        Jump;
+   wire        MemRead;
+   wire        MemtoRegD;
+   wire        MemWriteD;
+   wire        StallD;
+   wire        RegDstD;
+   wire        RegWriteD;
+   /////////////////
+   //Execute Stage//
+   /////////////////
+   wire [31:0] ALUOutE;
+   wire [31:0] RD1_E;
+   wire [31:0] RD2_E;
+   wire [31:0] SignImmE;
+   wire [31:0] SrcAE;
+   wire [31:0] SrcBE;
+   wire [31:0] WriteDataE;
+   wire [4:0]  RdE;
+   wire [4:0]  RsE;
+   wire [4:0]  RtE;
+   wire [4:0]  WriteRegE;
+   wire [2:0]  ALUControlE;
+   wire [1:0]  ForwardAE;
+   wire [1:0]  ForwardBE;
+   wire        ALUSrcE;
+   wire        FlushE;
+   wire        MemtoRegE;
+   wire        MemWriteE;
+   wire        RegDstE;
+   wire        RegWriteE;
+   ////////////////
+   //Memory Stage//
+   ////////////////
+   wire [31:0] ALUOutM;
+   wire [31:0] ReadDataM;
+   wire [31:0] WriteDataM;
+   wire [4:0]  WriteRegM;
+   wire        MemtoRegM;
+   wire        MemWriteM;
+   wire        RegWriteM;
+   ///////////////////
+   //WriteBack Stage//
+   ///////////////////
+   wire [31:0] ALUOutW;
+   wire [31:0] ReadDataW;
+   wire [31:0] ResultW;
+   wire [4:0]  WriteRegW;
+   wire MemtoRegW;
+   //Clock
    always begin
       clk <= ~clk;
       #5;
    end
-   wire[31:0] PCF;
-   wire [31:0] instrF;
-   wire [31:0] PC;
-   wire        StallF;
-   wire [31:0] PCPlus4F;
-   wire [31:0]  PCBranchD;
-   wire        BranchD;
-   wire        EqualD1,EqualD2;
-   wire        StallD;
-   wire [31:0] instrD;
-   wire [31:0] PCPlus4D;
-   wire        MemtoRegE,RegWriteE,MemtoRegM,RegWriteM,RegWriteW,MemWriteM,MemtoRegW;
-   wire [4:0]  RsD,RtD,RdD,RdE,RsE,RtE,WriteRegE,WriteRegM,WriteRegW,WriteRegM;
-   wire        ForwardAD,ForwardBD,FlushE;
-   wire [1:0]  ForwardAE,ForwardBE;
-   wire        RegDstD,Jump,MemRead,MemtoRegD,RegWriteD,ALUSrcD,MemWriteD,MemWriteE,ALUSrcE,RegDstE;
-   wire [2:0]  ALUControlD,ALUControlE;
-   wire [31:0] ALUOutE.ResultW,RD1_D,RD2_D,SignImmD,RD1_E,RD2_E,SignImmE,SrcAE,SrcBE,WriteDataE,WriteDataM,ReadDataM,ReadDataW,ALUOutW;
-   
-   assign RsD=instrD[25:21];
-   assign RtD=instrD[20:16];
-   assign RdD=instrD[15:11];
-   
-   
-   inst_memory im(clk,PCF[31:2],instrF);//ADDR??
-   if_reg if_reg(clk,PC,StallF,PCF);
-   mux mux_if(PCPlus4F,PCBranchD,BranchD && (EqualD1==EqualD2),PC);
-   add4 add4(PCF,PCPlus4F);
-   id_reg id_reg(clk,PCPlus4F,instrF,StallD,BranchD && (EqualD1==EqualD2),instrD,PCPlus4D);
-   hazard hazard(BranchD,MemtoRegE,RegWriteE,MemtoRegM,RegWriteM,RegWriteW,RsD,RtD,RsE,RtE,WriteRegE,WriteRegM,WriteRegW,StallF,StallD,ForwardAD,ForwardBD,FlushE,ForwardAE,ForwardBE);
-   control control(instrD,RegDstD,Jump,BranchD,MemRead,MemtoRegD,ALUControlD,RegWriteD,ALUSrcD,MemWriteD);
-   registers registers(clk,instrD[25:21],instrD[20:16],WriteRegW,ResultW,RegWriteW,RD1_D,RD2_D);
-   mux mux_id1(RD1_D,ALUOutM,ForwardAD,EqualD1);
-   mux mux_id2(RD2_D,ALUOutM,ForwardBD,EqualD2);
-   idmultipurpose adder(PCPlus4D,instrD[15:0],PCBranchD,SignImmD);
-   ex_reg ex_reg(clk,RD1_D,RD2_D,SignImmD,FlushE,RegWriteD,MemtoRegD,MemWriteD,ALUSrcD,RegDstD,BranchD,ALUControlD,RsD,RtD,RdD,RegWriteE,MemtoRegE,MemWriteE,ALUSrcE,RegDstE,ALUControlE,RD1_E,RD2_E,SignImmE,RsE,RtE,RdE);
-   mux mux_ex1(RtE,RdE,RegDstE,WriteRegE);
-   ALU alu(SrcAE, SrcBE, ALUControlE, ALUOutE);
-   threemux mux_ex2(RD1_E, ResultW, ALUOutM,ForwardAE,SrcAE);
-   threemux mux_ex3(RD2_E, ResultW, ALUOutM,ForwardBE,WriteDataE);
-   mux mux_ex4(WriteDataE,SignImmE,ALUSrcE,SrcBE);
-   mem_reg mem_reg(clk, ALUOutE,WriteDataE,RegWriteE,MemtoRegE,MemWriteE,WriteRegE,RegWriteM,MemtoRegM,MemWriteM,ALUOutM,WriteDataM,WriteRegM);
-   data_memory dm(clk, ALUOutM, WriteDataM, MemWriteM, MemRead, ReadDataM);
-   wb_reg wb(clk, ReadDataM, ALUOutM, RegWriteM, MemtoRegM, WriteRegM, RegWriteW, MemtoRegW, ReadDataW, ALUOutW, WriteRegW);
-   mux mux_wb(ReadDataW,ALUOutW,MemtoRegW,ResultW);
-
+   //Module Instantiations
+   ///////////////
+   //Fetch Stage//
+   ///////////////
+   mux mux_if(PCPlus4F,
+	      PCBranchD,
+	      BranchD && (EqualD1==EqualD2),
+	      PC);
+   if_reg if_reg(clk,
+		 PC,
+		 StallF,
+		 PCF);
+   inst_memory im(clk,
+		  PCF[31:2],
+		  instrF);
+   add4 add4(PCF,
+	     PCPlus4F);
+   ////////////////
+   //Decode Stage//
+   ////////////////
+   id_reg id_reg(clk,
+		 PCPlus4F,
+		 instrF,
+		 StallD,
+		 BranchD && (EqualD1==EqualD2),
+		 instrD,
+		 PCPlus4D);
+   control control(instrD,
+		   RegDstD,
+		   Jump,
+		   BranchD,
+		   MemRead,
+		   MemtoRegD,
+		   ALUControlD,
+		   RegWriteD,
+		   ALUSrcD,
+		   MemWriteD);
+   registers registers(clk,
+		       instrD[25:21],
+		       instrD[20:16],
+		       WriteRegW,
+		       ResultW,
+		       RegWriteW,
+		       RD1_D,
+		       RD2_D);
+   mux mux_id1(RD1_D,
+	       ALUOutM,
+	       ForwardAD,
+	       EqualD1);
+   mux mux_id2(RD2_D,
+	       ALUOutM,
+	       ForwardBD,
+	       EqualD2);
+   idmultipurpose adder(PCPlus4D,
+			instrD[15:0],
+			PCBranchD,
+			SignImmD);
+   /////////////////
+   //Execute Stage//
+   /////////////////
+   ex_reg ex_reg(clk,
+		 RD1_D,
+		 RD2_D,
+		 SignImmD,
+		 FlushE,
+		 RegWriteD,
+		 MemtoRegD,
+		 MemWriteD,
+		 ALUSrcD,
+		 RegDstD,
+		 BranchD,
+		 ALUControlD,
+		 RsD,
+		 RtD,
+		 RdD,
+		 RegWriteE,
+		 MemtoRegE,
+		 MemWriteE,
+		 ALUSrcE,
+		 RegDstE,
+		 ALUControlE,
+		 RD1_E,
+		 RD2_E,
+		 SignImmE,
+		 RsE,
+		 RtE,
+		 RdE);
+   mux mux_ex1(RtE,
+	       RdE,
+	       RegDstE,
+	       WriteRegE);
+   threemux mux_ex2(RD1_E,
+		    ResultW,
+		    ALUOutM,
+		    ForwardAE,
+		    SrcAE);
+   threemux mux_ex3(RD2_E,
+		    ResultW,
+		    ALUOutM,
+		    ForwardBE,
+		    WriteDataE);
+   mux mux_ex4(WriteDataE,
+	       SignImmE,
+	       ALUSrcE,
+	       SrcBE);
+   ALU alu(SrcAE,
+	   SrcBE,
+	   ALUControlE,
+	   ALUOutE);
+   ////////////////
+   //Memory Stage//
+   ////////////////
+   mem_reg mem_reg(clk,
+		   ALUOutE,
+		   WriteDataE,
+		   RegWriteE,
+		   MemtoRegE,
+		   MemWriteE,
+		   WriteRegE,
+		   RegWriteM,
+		   MemtoRegM,
+		   MemWriteM,
+		   ALUOutM,
+		   WriteDataM,
+		   WriteRegM);
+   data_memory dm(clk,
+		  ALUOutM,
+		  WriteDataM,
+		  MemWriteM,
+		  MemRead,
+		  ReadDataM);
+   ///////////////////
+   //WriteBack Stage//
+   ///////////////////
+   wb_reg wb(clk,
+	     ReadDataM,
+	     ALUOutM,
+	     RegWriteM,
+	     MemtoRegM,
+	     WriteRegM,
+	     RegWriteW,
+	     MemtoRegW,
+	     ReadDataW,
+	     ALUOutW,
+	     WriteRegW);
+   mux mux_wb(ReadDataW,
+	      ALUOutW,
+	      MemtoRegW,
+	      ResultW);
+   //////////
+   //Hazard//
+   //////////
+   hazard hazard(BranchD,
+		 MemtoRegE,
+		 RegWriteE,
+		 MemtoRegM,
+		 RegWriteM,
+		 RegWriteW,
+		 RsD,
+		 RtD,
+		 RsE,
+		 RtE,
+		 WriteRegE,
+		 WriteRegM,
+		 WriteRegW,
+		 StallF,
+		 StallD,
+		 ForwardAD,
+		 ForwardBD,
+		 FlushE,
+		 ForwardAE,
+		 ForwardBE);
 endmodule
 
 
