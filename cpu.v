@@ -12,6 +12,8 @@ module cpu();
    ////////////////
    //Decode Stage//
    ////////////////
+   wire [31:0] EqualD1;
+   wire [31:0] EqualD2;
    wire [31:0] instrD;
    wire [31:0] PCBranchD;
    wire [31:0] PCPlus4D;
@@ -26,7 +28,10 @@ module cpu();
    wire [2:0]  ALUControlD;
    wire        ALUSrcD;
    wire        BranchD;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f3e1aaa240f3cc44fab2f6aac07f549419b00240
    wire        ForwardAD;
    wire        ForwardBD;
    wire        Jump;
