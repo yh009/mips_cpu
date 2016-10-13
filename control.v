@@ -82,6 +82,14 @@ module control(input [31:0] instr,
 	 RegWrite <= 1;
 	 ALUSrc <= 1;
        end
+       `LUI: begin
+	 $display("%b: LUI", opcode);
+	 ALUop <= `ALU_add;
+	 RegWrite <= 1;
+	 ALUSrc <= 1;
+	   end
+	 
+	 
        `SPECIAL: begin
 	  $display("%b: SPECIAL", opcode);
 	  case (funct)
