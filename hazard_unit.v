@@ -80,91 +80,91 @@ endmodule // harzard
 
 
 
-module test();
-//inputs
-reg BranchD;
-reg MemtoRegE;
-reg RegWriteE;
-reg MemtoRegM;
-reg RegWriteM;
-reg RegWriteW;
-reg [4:0] RsD;
-reg [4:0] RtD;
-reg [4:0] RsE;
-reg [4:0] RtE;
-reg [4:0] WriteRegE;
-reg [4:0] WriteRegM;
-reg [4:0] WriteRegW;
+// module test();
+// //inputs
+// reg BranchD;
+// reg MemtoRegE;
+// reg RegWriteE;
+// reg MemtoRegM;
+// reg RegWriteM;
+// reg RegWriteW;
+// reg [4:0] RsD;
+// reg [4:0] RtD;
+// reg [4:0] RsE;
+// reg [4:0] RtE;
+// reg [4:0] WriteRegE;
+// reg [4:0] WriteRegM;
+// reg [4:0] WriteRegW;
 
-//outputs
-wire StallF;
-wire StallD;
-wire ForwardAD;
-wire ForwardBD;
-wire FlushE;
-wire [1:0] ForwardAE;
-wire [1:0] ForwardBE;
+// //outputs
+// wire StallF;
+// wire StallD;
+// wire ForwardAD;
+// wire ForwardBD;
+// wire FlushE;
+// wire [1:0] ForwardAE;
+// wire [1:0] ForwardBE;
 
-hazard my_hazard(
-BranchD,
-MemtoRegE,
-RegWriteE,
-MemtoRegM,
-RegWriteM,
-RegWriteW,
-RsD,
-RtD,
-RsE,
-RtE,
-WriteRegE,
-WriteRegM,
-WriteRegW,
-StallF,
-StallD,
-ForwardAD,
-ForwardBD,
-FlushE,
-ForwardAE,
-ForwardBE
-);
+// hazard my_hazard(
+// BranchD,
+// MemtoRegE,
+// RegWriteE,
+// MemtoRegM,
+// RegWriteM,
+// RegWriteW,
+// RsD,
+// RtD,
+// RsE,
+// RtE,
+// WriteRegE,
+// WriteRegM,
+// WriteRegW,
+// StallF,
+// StallD,
+// ForwardAD,
+// ForwardBD,
+// FlushE,
+// ForwardAE,
+// ForwardBE
+// );
 
-initial begin
-	//Stalls and Flush
-	#10 RtE=5'b00100;RsD=5'b00100;MemtoRegE=1;
-	#10 RtE=0;RsD=0;MemtoRegE=0;
-	#10 BranchD=1;WriteRegE=5'b10000;RsD=5'b10000;RegWriteE=1;
-	#10 BranchD=0;WriteRegE=0;RsD=0;RegWriteE=0;
-	#10 BranchD=1;WriteRegM=5'b10000;RtD=5'b10000;MemtoRegM=1;
-	#10 BranchD=0;WriteRegM=0;RtD=0;MemtoRegM=0;
-	//ForwardAD & BD
-	#10 RsD=5'b1;WriteRegM=5'b1;RegWriteM=1;
-	#10 RsD=0;WriteRegM=0;RegWriteM=0;
-	#10 RtD=5'b00010;WriteRegM=5'b00010;RegWriteM=1;
-	#10 RtD=0;WriteRegM=0;RegWriteM=0;
-	//ForwardAE
-	#10 RsE=5'b00101;
-	#10 WriteRegM=5'b00101;
-	#10 RegWriteM=1;
-	#10 RegWriteM=0;
-	#10 RegWriteW=1;WriteRegW=5'b00101;
-	#10 RegWriteW=0;WriteRegM=0;RsE=0;WriteRegW=0;
-	//ForwardBE
-	#10 RtE=5'b00100;
-	#10 WriteRegM=5'b00100;
-	#10 RegWriteM=1;
-	#10 RegWriteM=0;
-	#10 RegWriteW=1;WriteRegW=5'b00100;
-	#10 RtE=0;WriteRegM=0;RegWriteW=0;WriteRegW=0;
-
-
-end
+// initial begin
+// 	//Stalls and Flush
+// 	#10 RtE=5'b00100;RsD=5'b00100;MemtoRegE=1;
+// 	#10 RtE=0;RsD=0;MemtoRegE=0;
+// 	#10 BranchD=1;WriteRegE=5'b10000;RsD=5'b10000;RegWriteE=1;
+// 	#10 BranchD=0;WriteRegE=0;RsD=0;RegWriteE=0;
+// 	#10 BranchD=1;WriteRegM=5'b10000;RtD=5'b10000;MemtoRegM=1;
+// 	#10 BranchD=0;WriteRegM=0;RtD=0;MemtoRegM=0;
+// 	//ForwardAD & BD
+// 	#10 RsD=5'b1;WriteRegM=5'b1;RegWriteM=1;
+// 	#10 RsD=0;WriteRegM=0;RegWriteM=0;
+// 	#10 RtD=5'b00010;WriteRegM=5'b00010;RegWriteM=1;
+// 	#10 RtD=0;WriteRegM=0;RegWriteM=0;
+// 	//ForwardAE
+// 	#10 RsE=5'b00101;
+// 	#10 WriteRegM=5'b00101;
+// 	#10 RegWriteM=1;
+// 	#10 RegWriteM=0;
+// 	#10 RegWriteW=1;WriteRegW=5'b00101;
+// 	#10 RegWriteW=0;WriteRegM=0;RsE=0;WriteRegW=0;
+// 	//ForwardBE
+// 	#10 RtE=5'b00100;
+// 	#10 WriteRegM=5'b00100;
+// 	#10 RegWriteM=1;
+// 	#10 RegWriteM=0;
+// 	#10 RegWriteW=1;WriteRegW=5'b00100;
+// 	#10 RtE=0;WriteRegM=0;RegWriteW=0;WriteRegW=0;
 
 
-initial begin
-	$monitor($time, " StallF=%b, StallD=%b, ForwardAD=%b,ForwardBD=%b,FlushE=%b,ForwardAE=%b,ForwardBE=%b",StallF,StallD,ForwardAD,ForwardBD,FlushE,ForwardAE,ForwardBE);
-	#5000 $finish; 
-end
+// end
 
-endmodule
+
+// initial begin
+// 	$monitor($time, " StallF=%b, StallD=%b, ForwardAD=%b,ForwardBD=%b,FlushE=%b,ForwardAE=%b,ForwardBE=%b",StallF,StallD,ForwardAD,ForwardBD,FlushE,ForwardAE,ForwardBE);
+// 	#5000 $finish; 
+// end
+
+// endmodule
 
 

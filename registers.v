@@ -75,6 +75,6 @@ endmodule
 // 		reg_write <= 0;
 
 
-	end
+	// end
 
-endmodule
+// endmodule

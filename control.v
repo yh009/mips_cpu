@@ -131,50 +131,50 @@ module control(input [31:0] instr,
 endmodule // control
 
 
-module test;
-   reg [31:0] instr;
-   wire RegDst;
-   wire Jump;
-   wire Branch;
-   wire MemRead;
-   wire MemToReg;
-   wire [2:0] ALUop;
-   wire       RegWrite;
-   wire       ALUSrc;
-   wire       MemWrite;
+// module test;
+//    reg [31:0] instr;
+//    wire RegDst;
+//    wire Jump;
+//    wire Branch;
+//    wire MemRead;
+//    wire MemToReg;
+//    wire [2:0] ALUop;
+//    wire       RegWrite;
+//    wire       ALUSrc;
+//    wire       MemWrite;
 
-   control myControl(instr,RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+//    control myControl(instr,RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
    
-   initial begin
-		#10 instr=`ADD;
-		#20 instr=`BNE;
-		#20 instr=`SUB;
-		#20 instr=`JR;
-		#20 instr=`AND;
-		#20 instr=`OR;
-		#20 instr=`SLT;
-		#20 instr=`JAL;
-		#20 instr=`ADDI;
-		#20 instr=`ORI;
-		#20 instr=`LW;
-		#20 instr=`SW;
-		#20 instr=`BEQ;
-		#20 instr=`J;
+//    initial begin
+// 		#10 instr=`ADD;
+// 		#20 instr=`BNE;
+// 		#20 instr=`SUB;
+// 		#20 instr=`JR;
+// 		#20 instr=`AND;
+// 		#20 instr=`OR;
+// 		#20 instr=`SLT;
+// 		#20 instr=`JAL;
+// 		#20 instr=`ADDI;
+// 		#20 instr=`ORI;
+// 		#20 instr=`LW;
+// 		#20 instr=`SW;
+// 		#20 instr=`BEQ;
+// 		#20 instr=`J;
 		
 		
-		//#100 $finish;
-	end
+// 		//#100 $finish;
+// 	end
 
-	initial begin
-		$monitor($time, " RegDst=%b,Jump=%b,Branch=%b,MemRead=%b,MemToReg=%b,ALUop=%b,RegWrite=%b,ALUSrc=%b,MemWrite=%b.",
-			 RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
-		#10000 $finish;
-	end
-   //initial begin
-      //clk=0;
-   //end
+// 	initial begin
+// 		$monitor($time, " RegDst=%b,Jump=%b,Branch=%b,MemRead=%b,MemToReg=%b,ALUop=%b,RegWrite=%b,ALUSrc=%b,MemWrite=%b.",
+// 			 RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+// 		#10000 $finish;
+// 	end
+//    //initial begin
+//       //clk=0;
+//    //end
 
-   //always #250 clk=~clk;
+//    //always #250 clk=~clk;
 
 
-endmodule
+// endmodule
