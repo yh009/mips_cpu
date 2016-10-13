@@ -18,14 +18,15 @@ module cpu();
    wire [31:0] RD1_D;
    wire [31:0] RD2_D;
    wire [31:0] SignImmD;
+   wire [31:0] EqualD1;
+   wire [31:0] EqualD2;
    wire [4:0]  RdD = instrD[15:11];
    wire [4:0]  RsD = instrD[25:21];
    wire [4:0]  RtD = instrD[20:16];
    wire [2:0]  ALUControlD;
    wire        ALUSrcD;
    wire        BranchD;
-   wire        EqualD1;
-   wire        EqualD2;
+
    wire        ForwardAD;
    wire        ForwardBD;
    wire        Jump;
@@ -168,7 +169,7 @@ module cpu();
 		 RsE,
 		 RtE,
 		 RdE);
-   mux mux_ex1(RtE,
+   mux_5 mux_ex1(RtE,
 	       RdE,
 	       RegDstE,
 	       WriteRegE);
