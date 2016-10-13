@@ -1,15 +1,17 @@
 `include "mips.h"
 
 module control(input [31:0] instr,
-	       output reg RegDst,
-	       output reg Jump,
-	       output reg Branch,
-	       output reg MemRead,
-	       output reg MemToReg,
+	       input [31:0] 	vreg,
+	       input [31:0]     str, 	
+	       output reg 	RegDst,
+	       output reg 	Jump,
+	       output reg 	Branch,
+	       output reg 	MemRead,
+	       output reg 	MemToReg,
 	       output reg [2:0] ALUop,
-	       output reg RegWrite,
-	       output reg ALUSrc,
-	       output reg MemWrite);
+	       output reg 	RegWrite,
+	       output reg 	ALUSrc,
+	       output reg 	MemWrite);
    wire [5:0] opcode = instr [31:26];
    wire [5:0] funct = instr [5:0];
    initial 
@@ -127,8 +129,13 @@ module control(input [31:0] instr,
 	       $display("funct: %b: JR", funct);
 	       Jump <= 1;
 	    end
-	    `SYSCALL:
-	       $display("funct: %b: SYSCALL", funct);
+	    `SYSCALL: begin
+	       case (vreg)
+		 4: $display("%s", str);
+		 10: $finish;
+		 default: $display("Syscall, but not a supported one!");
+	       endcase // case (vreg)
+	    end
 	    default:
 	       $display("funct: %b: That's not a supported funct!", funct);
 	  endcase

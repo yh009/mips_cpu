@@ -4,13 +4,15 @@ module registers(
 		 input [4:0]   write_reg,
 		 input [31:0]  write_data,
 		 input reg_write,
-		 output [31:0] read_data_1, read_data_2);
+		 output [31:0] read_data_1, read_data_2, sys_call_reg,std_out_address);
 
    reg [31:0] register_file [31:0];
    reg [31:0] data1;
    reg [31:0] data2;
    assign read_data_1 = data1;
    assign read_data_2 = data2;
+   assign sys_call_reg = register_file[2];
+   assign std_out_address = register_file[4];
 
  //   //This initial only for test
  //   initial begin
