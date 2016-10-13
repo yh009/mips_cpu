@@ -20,18 +20,12 @@ module cpu();
    wire [31:0] RD1_D;
    wire [31:0] RD2_D;
    wire [31:0] SignImmD;
-   wire [31:0] EqualD1;
-   wire [31:0] EqualD2;
    wire [4:0]  RdD = instrD[15:11];
    wire [4:0]  RsD = instrD[25:21];
    wire [4:0]  RtD = instrD[20:16];
    wire [2:0]  ALUControlD;
    wire        ALUSrcD;
    wire        BranchD;
-<<<<<<< HEAD
-
-=======
->>>>>>> f3e1aaa240f3cc44fab2f6aac07f549419b00240
    wire        ForwardAD;
    wire        ForwardBD;
    wire        Jump;
