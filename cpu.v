@@ -35,6 +35,7 @@ module cpu();
    wire        StallD;
    wire        RegDstD;
    wire        RegWriteD;
+   wire  [31:0] Std_Out_Address,Syscall_Info,Std_Out;
    /////////////////
    //Execute Stage//
    /////////////////
@@ -109,6 +110,8 @@ module cpu();
 		 instrD,
 		 PCPlus4D);
    control control(instrD,
+      Syscall_Info,
+      Std_Out,
 		   RegDstD,
 		   Jump,
 		   BranchD,
@@ -125,7 +128,10 @@ module cpu();
 		       ResultW,
 		       RegWriteW,
 		       RD1_D,
-		       RD2_D);
+		       RD2_D,
+             Syscall_Info,
+             Std_Out_Address
+             );
    mux mux_id1(RD1_D,
 	       ALUOutM,
 	       ForwardAD,
@@ -206,12 +212,15 @@ module cpu();
 		   ALUOutM,
 		   WriteDataM,
 		   WriteRegM);
+
    data_memory dm(clk,
 		  ALUOutM,
 		  WriteDataM,
 		  MemWriteM,
-		  MemRead,
-		  ReadDataM);
+        MemRead,
+        Std_Out_Address,
+		  ReadDataM,
+        Std_Out);
    ///////////////////
    //WriteBack Stage//
    ///////////////////
