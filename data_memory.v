@@ -4,7 +4,9 @@ module data_memory(
 		   input wire [31:0]  write_data,
 		   input wire mem_write,
 		   input wire mem_read,
-		   output [31:0] read_data);
+		   input wire std_out_address,
+		   output [31:0] read_data,
+		   output [31:0] std_out);
    
    reg [31:0] mymem [32'h0 : 32'h256];
    reg [31:0] tempread;
@@ -22,6 +24,7 @@ module data_memory(
 	end
 
 	assign read_data = mem_write ? write_data : mymem[address];
+	assign std_out = mymem[std_out_address];
 
 endmodule
 
