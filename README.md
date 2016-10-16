@@ -1,6 +1,9 @@
 Names: Jiayu Huang, Yuxuan Huang, Kenny Rader
+
 Date: 10-20-16
+
 Class: CSCI 320L
+
 Section: 8am
 
 # Pipelined MIPS CPU
