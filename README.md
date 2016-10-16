@@ -71,6 +71,7 @@ to determine its next steps, reading from data_memory if necessary.
 
 # Compilation
 The program can be compiled with the following command:
+
 make
 
 There is a Makefile for this project, so just running make should suffice in compiling
@@ -78,4 +79,5 @@ the program, provided you have ALL of the project files.
 
 # Execution
 The program can then be executed with the following command:
+
 ./mips_test
