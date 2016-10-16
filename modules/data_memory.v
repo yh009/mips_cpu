@@ -8,11 +8,11 @@ module data_memory(
 		   output [31:0] read_data,
 		   output [31:0] std_out);
    
-   reg [31:0] mymem [32'h0 : 32'h256];
+   reg [31:0] mymem [32'h400000 : 32'h400400];
    reg [31:0] tempread;
    initial
    begin
-   $readmemh("add_test.data", mymem);
+   $readmemh("hello.s", mymem);
    //$display("%h", mymem[5]);
    end
 
