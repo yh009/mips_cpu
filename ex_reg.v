@@ -14,6 +14,20 @@ reg regwrite,memtoreg,memwrite,alusrc,regdst;
 reg [2:0] alucontrol;
 reg [4:0] rs, rt, rd;
 
+initial begin
+	rd1 = 0;
+	rd2 = 0;
+	signimm = 0;
+	regwrite = 0;
+	memtoreg = 0;
+	memwrite = 0;
+	alusrc = 0;
+	regdst = 0;
+	alucontrol = 0;
+	rs = 0;
+	rt = 0;
+	rd = 0;
+end
 //Assign:
 assign regwritee = regwrite;
 assign memtorege = memtoreg;

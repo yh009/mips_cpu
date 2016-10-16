@@ -11,6 +11,14 @@ reg [31:0] aluout, rd;
 reg regwrite,memtoreg;
 reg [4:0]writereg;
 
+initial begin
+	aluout = 0;
+	rd = 0;
+	regwrite = 0;
+	memtoreg = 0;
+	writereg = 0;
+end
+
 //Assign:
 assign regwritew = regwrite;
 assign memtoregw = memtoreg;

@@ -9,6 +9,10 @@ reg [31:0] instr;
 reg [31:0] pcp4;
 assign instrD = instr;
 assign pcp4D = pcp4;
+initial begin
+	instr = 0;
+	pcp4 = 0;
+end
 
 always @(posedge clk) begin
 	if(!stalld & !clr) begin
