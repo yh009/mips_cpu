@@ -16,7 +16,7 @@ modules that all work together to form the processor.
 # Design
 Our design is rather complex. The top level module is called cpu.v, and it
 instantiates all of the other modules and connects them together. This module is
-separated through comments into six distinct parts. One for each of the five
+separated through comments into six distinct parts, one for each of the five
 pipeline stages and one for the hazard unit, which is present throughout every
 stage. The modules instantiated in each stage are as follows:
 
