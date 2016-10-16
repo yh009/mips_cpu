@@ -6,6 +6,18 @@ module mux(input [31:0] in1,
      out = (select)? in1 : in2;
 endmodule // mux
 
+module mux_ini(input [31:0] in1,
+	   input [31:0]  in2,
+	   input select,
+	   output reg [31:0] out);
+   initial begin
+   		out <= 31'h400030;
+   		// $monitor("PC: %x,%x",out,select,$time);
+   end
+   always @(select)
+     out = (select)? in1 : in2;
+endmodule // mux
+
 module mux_5(input [4:0] in1,
 	   input [4:0]  in2,
 	   input select,
