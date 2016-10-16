@@ -6,6 +6,12 @@ Class: CSCI 320L
 
 Section: 8am
 
+# File Structure
+All of our files for this project are contained within the folder modules. Everything
+can be done from there. There is not an abundant amount of further documentation
+because we took steps to insure that our code is well-organized and well-commented,
+but if there is any further documentation, it is contained in the docs folder.
+
 # Pipelined MIPS CPU
 This is a simulation of a pipelined CPU written in Verilog. The system reads from
 an instruction file in the inst_memory module, and sends each of the instructions
@@ -59,3 +65,17 @@ and data_memory modules. In the event of a syscall, the value held in $v0 in the
 register module would be sent to the control module to be deciphered. If the control
 module determines that the instruction is indeed a syscall, it would use this value
 to determine its next steps, reading from data_memory if necessary.
+
+# Testing
+*SECTION NEEDED*
+
+# Compilation
+The program can be compiled with the following command:
+make
+
+There is a Makefile for this project, so just running make should suffice in compiling
+the program, provided you have ALL of the project files.
+
+# Execution
+The program can then be executed with the following command:
+./mips_test
