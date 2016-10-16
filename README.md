@@ -44,3 +44,18 @@ that determines the result to write to a register.
 
 * The Hazard Stage, as you would expect, instantiates the hazard unit, which acts
 very similarly to the control unit, but for hazard-specific signals.
+
+We tried to stick as close as possible to the module diagram provided in the
+problem writeup:
+![Module Diagram](https://www.eg.bucknell.edu/~csci320/2016-fall/wp-content/uploads/2015/09/harris_pipeline_mips.png)
+
+This includes naming all our wires the same as the connecting wires depicted here,
+as well as connecting them in the same manner shown in the image. One notable
+deviation from this design includes the condensing of the sign extension and
+left-shifting for calculating branch targets into one single module (called
+id_multipurpose). Another major change involves providing support for syscalls.
+We did this by adding wires transferring syscall information to the register, control,
+and data_memory modules. In the event of a syscall, the value held in $v0 in the
+register module would be sent to the control module to be deciphered. If the control
+module determines that the instruction is indeed a syscall, it would use this value
+to determine its next steps, reading from data_memory if necessary.
