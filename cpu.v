@@ -78,9 +78,14 @@ module cpu();
    wire [4:0]  WriteRegW;
    wire MemtoRegW;
    //Clock
+   //Time
    always begin
       clk <= ~clk;
       #5;
+   end
+
+   initial begin
+   	$monitor("The Instrrunning: %x PC: %x",instrF,PC,$time);
    end
    //Module Instantiations
    ///////////////

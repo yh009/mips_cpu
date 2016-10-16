@@ -3,12 +3,15 @@ module inst_memory(
 	input [29:0] read_addr, 
 	output[31:0] memout);
 
-   reg [31:0] mymem [32'h0 : 32'h256];
+   reg [31:0] mymem [32'h400000 : 32'h400400];
    reg [31:0] regout;
 
    assign memout = regout;
 
-   initial $readmemh("add_test.data", mymem);
+   initial begin
+   	$readmemh("hello.s", mymem);
+   	$display("mem: %x",mymem[32'h400000]);
+   end
    always @(*) 
     begin
 		regout = mymem[read_addr];

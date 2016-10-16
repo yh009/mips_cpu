@@ -7,6 +7,10 @@ output[31:0] pcfetch
 
 reg [31:0] pcreg;
 
+initial begin
+     pcreg = 31'h400030;
+end
+
 assign pcfetch = pcreg;
 
 always @(posedge clk) begin
