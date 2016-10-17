@@ -1,4 +1,4 @@
-global __start
+.global __start
 .text
  
 # this is normally the LibC startup code
