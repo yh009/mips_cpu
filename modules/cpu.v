@@ -99,7 +99,7 @@ module cpu(
   
 
    initial begin
-   	$monitor($time," %x %x %x ",PC,PCPlus4F,PCBranchD,BranchD, EqualD1, EqualD2);
+   	// $monitor($time," %x %x %x %x %x %x %x %x",PC,PCPlus4F,PCF,BranchD, EqualD1, EqualD2, instrD);
    end
 
 

@@ -12,7 +12,7 @@ module mux_ini(input [31:0] in1,
 	   output reg [31:0] out);
    initial begin
    		out <= 31'h400030;
-   		// $monitor("PC: %x,%x",out,select,$time);
+   		$monitor("PC: %x,%x,%x,%x",in1,in2,select,out,$time);
    end
    always @(*)
      out = (select)? in1 : in2;

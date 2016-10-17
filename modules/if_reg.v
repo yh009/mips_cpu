@@ -9,6 +9,7 @@ reg [31:0] pcreg;
 
 initial begin
      pcreg = 31'h400030;
+     // $monitor("%x,%x",pcadd,pcfetch);
 end
 
 assign pcfetch = pcreg;

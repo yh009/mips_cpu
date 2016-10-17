@@ -12,7 +12,7 @@ module inst_memory(
 
     $display("this is %x",mymem[32'h00100000]);
     
-    $monitor("%x %x",read_addr,regout);   
+    //$monitor("%x %x",read_addr,regout);   
    end
    always @(*)
     begin

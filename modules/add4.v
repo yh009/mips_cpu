@@ -9,7 +9,9 @@ module idmultipurpose(input [31:0] inval,
 		      output reg [31:0] signextended);
    
    reg[31:0] extended;
-   
+   initial begin
+     //$monitor("%b,%b,%b,%b",inval,inval2,outval,signextended);
+   end
    always @(*)
    begin
    		extended = {{16{inval2[15]}}, inval2[15:0]};

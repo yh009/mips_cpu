@@ -10,7 +10,7 @@ reg [31:0] pcp4;
 assign instrD = instr;
 assign pcp4D = pcp4;
 initial begin
-	//$monitor("%x,%x,%x,%x",rd,instrD,pcp4D,stalld,clr);
+	// $monitor("%x,%x,%x,%x",rd,instrD,pcp4D,stalld,clr);
 	instr = 0;
 	pcp4 = 0;
 end
