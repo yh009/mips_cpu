@@ -3,7 +3,7 @@ module mux(input [31:0] in1,
 	   input select,
 	   output reg [31:0] out);
    always @(*)
-     out = (select)? in1 : in2;
+     out = (!select)? in1 : in2;
 endmodule // mux
 
 module mux_ini(input [31:0] in1,
@@ -15,7 +15,7 @@ module mux_ini(input [31:0] in1,
    		$monitor("PC: %x,%x,%x,%x",in1,in2,select,out,$time);
    end
    always @(*)
-     out = (select)? in1 : in2;
+     out = (!select)? in1 : in2;
 endmodule // mux
 
 module mux_5(input [4:0] in1,

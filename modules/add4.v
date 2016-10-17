@@ -10,7 +10,7 @@ module idmultipurpose(input [31:0] inval,
    
    reg[31:0] extended;
    initial begin
-     //$monitor("%b,%b,%b,%b",inval,inval2,outval,signextended);
+     //$monitor("idmulti: %b,%b,%b,%b,%b",inval,inval2,outval,signextended,extended);
    end
    always @(*)
    begin
