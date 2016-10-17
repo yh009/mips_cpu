@@ -1,18 +1,20 @@
 module inst_memory(
-	input clk,
-	input [29:0] read_addr, 
+	input [29:0] read_addr,
 	output[31:0] memout);
 
-   reg [31:0] mymem [32'h400000 : 32'h400400];
+   reg [31:0] mymem [32'h00100000: 32'h00100090];
    reg [31:0] regout;
 
    assign memout = regout;
 
    initial begin
    	$readmemh("hello.s", mymem);
-   	$display("mem: %x",mymem[32'h400000]);
+
+    $display("this is %x",mymem[32'h00100000]);
+    
+    $monitor("%x %x",read_addr,regout);   
    end
-   always @(*) 
+   always @(*)
     begin
 		regout = mymem[read_addr];
 		if (regout == 0)
