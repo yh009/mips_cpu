@@ -6,6 +6,22 @@ module mux(input [31:0] in1,
      out = (!select)? in1 : in2;
 endmodule // mux
 
+
+module muxtest();
+  reg [31:0]a;
+  reg [31:0]b;
+  reg select;
+  wire [31:0] out;
+  mux mux(a,b,select,out);
+  initial
+  begin
+    $monitor(a,b,select,out);
+    a = 4;
+    b = 3;
+    select = 0;
+  end
+endmodule
+
 module mux_ini(input [31:0] in1,
 	       input [31:0] 	 in2,
 	       input 		 select,

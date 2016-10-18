@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1s/1s
 module cpu(input clk);
    //Wire/Reg Declarations
    ///////////////
@@ -83,13 +83,19 @@ module cpu(input clk);
   
 
    initial begin
-   	$monitor($time,"instrD= %x, instrF = %x, RD1_D = %x, RD2_D = %x",instrD,instrF,RD1_D,RD2_D);
-   	// $monitor("%x,resultw = %x,%x",
-		  //      WriteRegW,
-		  //      ResultW,
-		  //      RegWriteW,
-    //          );
+   	//$monitor($time,"instrD= %x, instrF = %x, RD1_D = %x, RD2_D = %x",instrD,instrF,RD1_D,RD2_D);
+   	//  $monitor("%x,resultw",
+		  // //      WriteRegW,
+		  //       ResultW
+		  // //      RegWriteW,
+    //         );
+    
    end
+
+   always @(clk)begin
+   		$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
+   end
+   
 
    //Module Instantiations
    ///////////////
@@ -243,8 +249,8 @@ module cpu(input clk);
 	     ReadDataW,
 	     ALUOutW,
 	     WriteRegW);
-   mux mux_wb(ReadDataW,
-	      ALUOutW,
+   mux mux_wb(ALUOutW,
+	      ReadDataW,
 	      MemtoRegW,
 	      ResultW);
    //////////

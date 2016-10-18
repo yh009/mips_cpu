@@ -1,4 +1,3 @@
-
 module test_cpu;
 	reg clk = 0;
 	
@@ -9,8 +8,8 @@ module test_cpu;
 	end
 
 	initial begin
-		//$display("clk = %d",clk);
-		//$monitor($time,"clk: %d",clk);
+		#400;
+		$finish();
 	end
 	
 endmodule
