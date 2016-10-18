@@ -1,3 +1,5 @@
+`include "cpu.v"
+
 module test_cpu;
 	reg clk = 0;
 	

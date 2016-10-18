@@ -1,4 +1,17 @@
 `timescale 1s/1s
+`include "mux.v"
+ `include "add4.v"
+ `include "ALU.v"
+ `include "control.v"
+ `include "data_memory.v"
+ `include "ex_reg.v"
+ `include "hazard_unit.v"
+ `include "id_reg.v"
+ `include "if_reg.v"
+ `include "inst_memory.v"
+ `include "mem_reg.v"
+ `include "registers.v"
+ `include "wb_reg.v"
 module cpu(input clk);
    //Wire/Reg Declarations
    ///////////////
