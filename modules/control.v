@@ -25,7 +25,7 @@ module control(input [31:0] instr,
       RegWrite = 1'b0;
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
-      // //$monitor("RegDst:%b Jump:%b Branch:%b MemRead:%b MemToReg:%b ALUop:%b RegWrite: %b ALUSrc:%b MemWrite:%b instr:%x",
+      //$monitor("instr:%x",instr);
       // 	RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite,instr);
      end
    always @(*)
@@ -95,7 +95,7 @@ module control(input [31:0] instr,
 	 
 	 
        `SPECIAL: begin
-	  $display("%b: SPECIAL", opcode);
+	  $display("%b, %x: SPECIAL", opcode,instr);
 	  case (funct)
 	    `ADD: begin
 	       $display("%b: ADD", funct);
