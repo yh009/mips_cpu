@@ -8,7 +8,7 @@ module data_memory(
 		   output [31:0] read_data,
 		   output [31:0] std_out);
    
-   reg [31:0] mymem [32'h400000 : 32'h400400];
+   reg [31:0] mymem [32'h100000 : 32'h101000];
    initial
    begin
    $readmemh("hello.s", mymem);

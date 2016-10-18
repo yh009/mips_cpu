@@ -1,23 +1,6 @@
 `timescale 1ns/1ns
-`include "mux.v"
- `include "add4.v"
- `include "ALU.v"
- `include "control.v"
- `include "data_memory.v"
- `include "ex_reg.v"
- `include "hazard_unit.v"
- `include "id_reg.v"
- `include "if_reg.v"
- `include "inst_memory.v"
- `include "mem_reg.v"
- `include "registers.v"
- `include "wb_reg.v"
-
-module cpu(
-	input clk
-	);
+module cpu(input clk);
    //Wire/Reg Declarations
-   
    ///////////////
    //Fetch Stage//
    ///////////////
@@ -37,6 +20,9 @@ module cpu(
    wire [31:0] RD1_D;
    wire [31:0] RD2_D;
    wire [31:0] SignImmD;
+   wire [31:0] Std_Out;
+   wire [31:0] Std_Out_Address;
+   wire [31:0] Syscall_Info;
    wire [4:0]  RdD = instrD[15:11];
    wire [4:0]  RsD = instrD[25:21];
    wire [4:0]  RtD = instrD[20:16];
@@ -52,7 +38,6 @@ module cpu(
    wire        StallD;
    wire        RegDstD;
    wire        RegWriteD;
-   wire  [31:0] Std_Out_Address,Syscall_Info,Std_Out;
    /////////////////
    //Execute Stage//
    /////////////////
@@ -94,8 +79,7 @@ module cpu(
    wire [31:0] ResultW;
    wire [4:0]  WriteRegW;
    wire MemtoRegW;
-   //Clock
-   //Time
+
   
 
    initial begin
@@ -106,7 +90,6 @@ module cpu(
 		  //      RegWriteW,
     //          );
    end
-
 
    //Module Instantiations
    ///////////////
@@ -136,8 +119,8 @@ module cpu(
 		 instrD,
 		 PCPlus4D);
    control control(instrD,
-      Syscall_Info,
-      Std_Out,
+		   Syscall_Info,
+		   Std_Out,
 		   RegDstD,
 		   Jump,
 		   BranchD,
@@ -155,9 +138,8 @@ module cpu(
 		       RegWriteW,
 		       RD1_D,
 		       RD2_D,
-             Syscall_Info,
-             Std_Out_Address
-             );
+		       Syscall_Info,
+		       Std_Out_Address);
    mux mux_id1(RD1_D,
 	       ALUOutM,
 	       ForwardAD,
@@ -166,10 +148,10 @@ module cpu(
 	       ALUOutM,
 	       ForwardBD,
 	       EqualD2);
-   idmultipurpose adder(PCPlus4D,
-			instrD[15:0],
-			PCBranchD,
-			SignImmD);
+   idmultipurpose multi(instrD[15:0],
+			PCPlus4D,
+			SignImmD,
+			PCBranchD);
    /////////////////
    //Execute Stage//
    /////////////////
@@ -288,6 +270,18 @@ module cpu(
 		 FlushE,
 		 ForwardAE,
 		 ForwardBE);
+   //Test Code
+   initial begin
+      $monitor($time," %x %x %x %x %x %x %x %x",
+	       PC,
+	       PCPlus4F,
+	       PCPlus4D,
+	       PCF,
+	       BranchD, 
+	       EqualD1, 
+	       EqualD2, 
+	       instrD);
+   end // initial begin
 endmodule
 
 

@@ -3,20 +3,17 @@ module add4(input [31:0] inval, output reg [31:0] outval);
      outval = inval + 4;
 endmodule
 
-module idmultipurpose(input [31:0] inval,
-		      input [15:0] 	inval2, 
-		      output reg [31:0] outval, 
-		      output reg [31:0] signextended);
-   
-   reg[31:0] extended;
-   initial begin
-     //$monitor("idmulti: %b,%b,%b,%b,%b",inval,inval2,outval,signextended,extended);
-   end
+module idmultipurpose(input [15:0] inst_low_16,
+		      input [31:0] PCPlus4D, 
+		      output reg [31:0] SignImmD, 
+		      output reg [31:0] PCBranchD);
+   reg [31:0] 				extended;
+   reg [31:0] 				left_shift;
    always @(*)
-   begin
-   		extended = {{16{inval2[15]}}, inval2[15:0]};
-   		signextended = extended;
-   		extended = extended << 2;
-   		outval = extended + inval;
-   end
+      begin
+	 extended = {{16{inst_low_16[15]}}, inst_low_16[15:0]};
+   	 left_shift = extended << 2;
+   	 SignImmD = extended;
+	 PCBranchD = left_shift + PCPlus4D;
+      end
 endmodule

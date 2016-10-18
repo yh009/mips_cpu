@@ -17,6 +17,7 @@ module inst_memory(
    always @(*)
     begin
 		regout = mymem[read_addr];
+
     end
 endmodule
 

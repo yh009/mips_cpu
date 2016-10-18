@@ -27,6 +27,7 @@ module control(input [31:0] instr,
       MemWrite = 1'b0;
       //$monitor("instr:%x",instr);
       // 	RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite,instr);
+
      end
    always @(*)
      case (opcode)
@@ -92,37 +93,35 @@ module control(input [31:0] instr,
 	 RegWrite <= 1;
 	 ALUSrc <= 1;
 	   end
-	 
-	 
        `SPECIAL: begin
 	  $display("%b, %x: SPECIAL", opcode,instr);
 	  case (funct)
 	    `ADD: begin
-	       $display("%b: ADD", funct);
+	       $display("funct: %b: ADD", funct);
 	       RegDst <= 1;
 	       ALUop <= 3'b010;
 	       RegWrite <= 1;
 	    end
 	    `SUB: begin
-	       $display("%b: SUB", funct);
+	       $display("funct: %b: SUB", funct);
                RegDst <= 1;
                ALUop <= 3'b110;
                RegWrite <= 1;
 	    end
 	    `AND: begin
-	       $display("%b: AND", funct);
+	       $display("funct: %b: AND", funct);
                RegDst <= 1;
                ALUop <= 3'b000;
                RegWrite <= 1;
 	    end
 	    `OR: begin
-	       $display("%b: OR", funct);
+	       $display("funct: %b: OR", funct);
                RegDst <= 1;
                ALUop <= 3'b001;
                RegWrite <= 1;
 	    end
 	    `SLT: begin
-	       $display("%b: SLT", funct);
+	       $display("funct: %b: SLT", funct);
                RegDst <= 1;
                ALUop <= 3'b111;
                RegWrite <= 1;
