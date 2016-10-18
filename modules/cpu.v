@@ -20,6 +20,9 @@ module cpu(input clk);
    wire [31:0] RD1_D;
    wire [31:0] RD2_D;
    wire [31:0] SignImmD;
+   wire [31:0] Std_Out;
+   wire [31:0] Std_Out_Address;
+   wire [31:0] Syscall_Info;
    wire [4:0]  RdD = instrD[15:11];
    wire [4:0]  RsD = instrD[25:21];
    wire [4:0]  RtD = instrD[20:16];
@@ -35,7 +38,6 @@ module cpu(input clk);
    wire        StallD;
    wire        RegDstD;
    wire        RegWriteD;
-   wire  [31:0] Std_Out_Address,Syscall_Info,Std_Out;
    /////////////////
    //Execute Stage//
    /////////////////
@@ -105,8 +107,8 @@ module cpu(input clk);
 		 instrD,
 		 PCPlus4D);
    control control(instrD,
-      Syscall_Info,
-      Std_Out,
+		   Syscall_Info,
+		   Std_Out,
 		   RegDstD,
 		   Jump,
 		   BranchD,
@@ -124,9 +126,8 @@ module cpu(input clk);
 		       RegWriteW,
 		       RD1_D,
 		       RD2_D,
-             Syscall_Info,
-             Std_Out_Address
-             );
+		       Syscall_Info,
+		       Std_Out_Address);
    mux mux_id1(RD1_D,
 	       ALUOutM,
 	       ForwardAD,
@@ -135,10 +136,10 @@ module cpu(input clk);
 	       ALUOutM,
 	       ForwardBD,
 	       EqualD2);
-   idmultipurpose adder(PCPlus4D,
-			instrD[15:0],
-			PCBranchD,
-			SignImmD);
+   idmultipurpose multi(instrD[15:0],
+			PCPlus4D,
+			SignImmD,
+			PCBranchD);
    /////////////////
    //Execute Stage//
    /////////////////
@@ -259,7 +260,7 @@ module cpu(input clk);
 		 ForwardBE);
    //Test Code
    initial begin
-      $monitor($time," %x %x %x %x %x %x %x,%x",
+      $monitor($time," %x %x %x %x %x %x %x %x",
 	       PC,
 	       PCPlus4F,
 	       PCPlus4D,
