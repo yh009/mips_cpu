@@ -78,7 +78,7 @@ module cpu(input clk);
    wire [31:0] ReadDataW;
    wire [31:0] ResultW;
    wire [4:0]  WriteRegW;
-   wire        MemtoRegW;
+   wire MemtoRegW;
    //Module Instantiations
    ///////////////
    //Fetch Stage//
@@ -91,7 +91,7 @@ module cpu(input clk);
 		 PC,
 		 StallF,
 		 PCF);
-   inst_memory im(
+   inst_memory im(clk
 		  PCF[31:2],
 		  instrF);
    add4 add4(PCF,
@@ -126,8 +126,9 @@ module cpu(input clk);
 		       RegWriteW,
 		       RD1_D,
 		       RD2_D,
-		       Syscall_Info,
-		       Std_Out_Address);
+             Syscall_Info,
+             Std_Out_Address
+             );
    mux mux_id1(RD1_D,
 	       ALUOutM,
 	       ForwardAD,
@@ -136,10 +137,10 @@ module cpu(input clk);
 	       ALUOutM,
 	       ForwardBD,
 	       EqualD2);
-   idmultipurpose multi(instrD[15:0],
-			PCPlus4D,
-			SignImmD,
-			PCBranchD);
+   idmultipurpose adder(PCPlus4D,
+			instrD[15:0],
+			PCBranchD,
+			SignImmD);
    /////////////////
    //Execute Stage//
    /////////////////
@@ -258,15 +259,18 @@ module cpu(input clk);
 		 FlushE,
 		 ForwardAE,
 		 ForwardBE);
-   //Monitors:
+   //Test Code
    initial begin
-   	$monitor($time,
-		 " instrD= %x, instrF = %x, RD1_D = %x, RD2_D = %x",
-		 instrD,
-		 instrF,
-		 RD1_D,
-		 RD2_D);
-   end
+      $monitor($time," %x %x %x %x %x %x %x %x",
+	       PC,
+	       PCPlus4F,
+	       PCPlus4D,
+	       PCF,
+	       BranchD, 
+	       EqualD1, 
+	       EqualD2, 
+	       instrD);
+   end // initial begin
 endmodule
 
 

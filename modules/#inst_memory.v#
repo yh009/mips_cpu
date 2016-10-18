@@ -1,4 +1,4 @@
-module inst_memory(
+module inst_memory(input clk,
 	input [29:0] read_addr,
 	output[31:0] memout);
 
@@ -7,13 +7,19 @@ module inst_memory(
 
    assign memout = regout;
 
-   initial begin
-   	$readmemh("hello.s", mymem);
-   end
-   always @(*)
-    begin
-		regout = mymem[read_addr];
-
+   always @(posedge clk)
+     begin
+	$readmemh("hello.s", mymem);
+        $display("mymem[%x] = %x");
+	
+	
+       regout = mymem[read_addr << 2];
+       $display("regout from inst_memory: %x", regout);
+       if (regout == 0)
+	 begin
+	    $strobe("Found null op at addr %08x.", read_addr);
+	    $finish();
+	 end
     end
 endmodule
 
