@@ -1,23 +1,6 @@
 `timescale 1ns/1ns
-`include "mux.v"
- `include "add4.v"
- `include "ALU.v"
- `include "control.v"
- `include "data_memory.v"
- `include "ex_reg.v"
- `include "hazard_unit.v"
- `include "id_reg.v"
- `include "if_reg.v"
- `include "inst_memory.v"
- `include "mem_reg.v"
- `include "registers.v"
- `include "wb_reg.v"
-
-module cpu(
-	input clk
-	);
+module cpu(input clk);
    //Wire/Reg Declarations
-   
    ///////////////
    //Fetch Stage//
    ///////////////
@@ -94,15 +77,6 @@ module cpu(
    wire [31:0] ResultW;
    wire [4:0]  WriteRegW;
    wire MemtoRegW;
-   //Clock
-   //Time
-  
-
-   initial begin
-   	//$monitor($time," %x %x %x %x %x %x %x,%x",PC,PCPlus4F,PCPlus4D,PCF,BranchD, EqualD1, EqualD2, instrD);
-   end
-
-
    //Module Instantiations
    ///////////////
    //Fetch Stage//
@@ -283,6 +257,18 @@ module cpu(
 		 FlushE,
 		 ForwardAE,
 		 ForwardBE);
+   //Test Code
+   initial begin
+      $monitor($time," %x %x %x %x %x %x %x,%x",
+	       PC,
+	       PCPlus4F,
+	       PCPlus4D,
+	       PCF,
+	       BranchD, 
+	       EqualD1, 
+	       EqualD2, 
+	       instrD);
+   end // initial begin
 endmodule
 
 
