@@ -8,7 +8,7 @@ module inst_memory(
    assign memout = regout;
 
    initial begin
-   	$readmemh("hello.s", mymem);
+   	$readmemh("hello.v", mymem);
    end
    always @(*)
     begin

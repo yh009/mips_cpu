@@ -12,6 +12,7 @@
  `include "mem_reg.v"
  `include "registers.v"
  `include "wb_reg.v"
+ `include "jump.v"
 module cpu(input clk);
    //Wire/Reg Declarations
    ///////////////
@@ -20,6 +21,7 @@ module cpu(input clk);
    wire [31:0] instrF;
    wire [31:0] 	PCF;
    wire [31:0] 	PC;
+   wire [31:0]	PCCon;
    wire [31:0] PCPlus4F;
    wire        StallF;
    ////////////////
@@ -49,7 +51,7 @@ module cpu(input clk);
    wire        MemtoRegD;
    wire        MemWriteD;
    wire        StallD;
-   wire        RegDstD;
+   wire [1:0]  RegDstD;
    wire        RegWriteD;
    /////////////////
    //Execute Stage//
@@ -72,7 +74,7 @@ module cpu(input clk);
    wire        FlushE;
    wire        MemtoRegE;
    wire        MemWriteE;
-   wire        RegDstE;
+   wire  [1:0] RegDstE;
    wire        RegWriteE;
    ////////////////
    //Memory Stage//
@@ -92,7 +94,16 @@ module cpu(input clk);
    wire [31:0] ResultW;
    wire [4:0]  WriteRegW;
    wire        MemtoRegW;
-
+   /////JAL & JR
+   reg [4:0] thirtyone = 5'd31;
+   wire [31:0] PCPlus4E;
+   wire [31:0] PCPlus4M;
+   wire [31:0] PCPlus4W;
+   wire JumpLinkD;
+   wire JumpLinkE;
+   wire JumpLinkM;
+   wire JumpLinkW;
+   wire [31:0] ResultWCon;
   
 
    initial begin
@@ -106,7 +117,8 @@ module cpu(input clk);
    end
 
    always @(clk)begin
-   		$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
+   		//$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
+   		$display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4D = %x, PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4D,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
    end
    
 
@@ -114,10 +126,14 @@ module cpu(input clk);
    ///////////////
    //Fetch Stage//
    ///////////////
+
+   jump j(instrD,PCPlus4D,PCCon,Jump,PC);
+
    mux_ini mux_if(PCPlus4F,
 	      PCBranchD,
 	      BranchD && (EqualD1==EqualD2),
-	      PC);
+	      PCCon);
+
    if_reg if_reg(clk,
 		 PC,
 		 StallF,
@@ -149,7 +165,8 @@ module cpu(input clk);
 		   ALUControlD,
 		   RegWriteD,
 		   ALUSrcD,
-		   MemWriteD);
+		   MemWriteD,
+		   JumpLinkD);
    registers registers(clk,
 		       instrD[25:21],
 		       instrD[20:16],
@@ -184,12 +201,15 @@ module cpu(input clk);
 		 MemtoRegD,
 		 MemWriteD,
 		 ALUSrcD,
-		 RegDstD,
+		 
 		 BranchD,
+		 RegDstD,
 		 ALUControlD,
 		 RsD,
 		 RtD,
 		 RdD,
+		 PCPlus4D,
+		 JumpLinkD,
 		 RegWriteE,
 		 MemtoRegE,
 		 MemWriteE,
@@ -201,9 +221,12 @@ module cpu(input clk);
 		 SignImmE,
 		 RsE,
 		 RtE,
-		 RdE);
-   mux_5 mux_ex1(RtE,
+		 RdE,
+		 PCPlus4E,
+		 JumpLinkE);
+   threemux5 mux_ex1(RtE,
 	       RdE,
+	       thirtyone,
 	       RegDstE,
 	       WriteRegE);
    threemux mux_ex2(RD1_E,
@@ -234,12 +257,16 @@ module cpu(input clk);
 		   MemtoRegE,
 		   MemWriteE,
 		   WriteRegE,
+		   PCPlus4E,
+		   JumpLinkE,
 		   RegWriteM,
 		   MemtoRegM,
 		   MemWriteM,
 		   ALUOutM,
 		   WriteDataM,
-		   WriteRegM);
+		   WriteRegM,
+		   PCPlus4M,
+		   JumpLinkM);
 
    data_memory dm(clk,
 		  ALUOutM,
@@ -258,15 +285,25 @@ module cpu(input clk);
 	     RegWriteM,
 	     MemtoRegM,
 	     WriteRegM,
+	     PCPlus4M,
+	     JumpLinkM,
 	     RegWriteW,
 	     MemtoRegW,
 	     ReadDataW,
 	     ALUOutW,
-	     WriteRegW);
+	     WriteRegW,
+	     PCPlus4W,
+	     JumpLinkW);
    mux mux_wb(ALUOutW,
 	      ReadDataW,
 	      MemtoRegW,
-	      ResultW);
+	      ResultWCon);
+  	mux mux_wb2(
+  			PCPlus4W,
+  			ResultWCon,	
+  			JumpLinkW,
+  			ResultW);
+
    //////////
    //Hazard//
    //////////

@@ -4,7 +4,7 @@ module control(
 	       input [31:0] 	instr,
 	       input [31:0] 	vreg,
 	       input [31:0] 	str, 
-	       output reg 	RegDst,
+	       output reg [1:0] 	RegDst,
 	       output reg 	Jump,
 	       output reg 	Branch,
 	       output reg 	MemRead,
@@ -12,12 +12,13 @@ module control(
 	       output reg [2:0] ALUop,
 	       output reg 	RegWrite,
 	       output reg 	ALUSrc,
-	       output reg 	MemWrite);
+	       output reg 	MemWrite,
+	       output reg 	JumpLink);
    wire [5:0] opcode = instr [31:26];
    wire [5:0] funct = instr [5:0];
    initial 
      begin
-      RegDst = 1'b0;
+      RegDst = 2'b0;
       Jump = 1'b0;
       Branch = 1'b0;
       MemRead = 1'b0;
@@ -26,10 +27,21 @@ module control(
       RegWrite = 1'b0;
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
+      JumpLink = 0;
      end
    always @(*)
      if (instr != 0 && opcode !== 6'bxxxxxx) 
        begin
+       RegDst = 2'b0;
+      Jump = 1'b0;
+      Branch = 1'b0;
+      MemRead = 1'b0;
+      MemToReg = 1'b0;
+      ALUop = 3'b000;
+      RegWrite = 1'b0;
+      ALUSrc = 1'b0;
+      MemWrite = 1'b0;
+      JumpLink = 0;
 	  $display("control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
@@ -37,12 +49,14 @@ module control(
 	       ALUop <= 3'b010;
                RegWrite <= 1;
                ALUSrc <= 1;
+               Jump <= 0;
 	    end
 	    `ORI: begin
 	       $display("%b: ORI", opcode);
 	       ALUop <= 3'b001;
                RegWrite <= 1;
                ALUSrc <= 1;
+               Jump <= 0;
 	    end
 	    `LW: begin
 	       $display("%b: LW", opcode);
@@ -51,22 +65,26 @@ module control(
 	       ALUop <= 3'b010;
                RegWrite <= 1;
                ALUSrc <= 1;
+               Jump <= 0;
 	    end  
 	    `SW: begin
 	       $display("%b: SW", opcode);
 	       ALUop <= 3'b010;
                ALUSrc <= 1;
                MemWrite <= 1;
+               Jump <= 0;
 	    end	  
 	    `BEQ: begin
 	       $display("%b: BEQ", opcode);
 	       Branch <= 1;
 	       ALUop <= 3'b110;
+	       Jump <= 0;
 	    end	  
 	    `BNE: begin
 	       $display("%b: BNE", opcode);
 	       Branch <= 1;
 	       ALUop <= 3'b110;
+	       Jump <= 0;
 	    end  
 	    `J: begin
 	       $display("%b: J", opcode);
@@ -75,34 +93,43 @@ module control(
 	    `JAL: begin
 	       $display("%b: JAL", opcode);
 	       Jump <= 1;
+	       JumpLink <= 1;
+	       RegDst <= 2;
+	       RegWrite <= 1;
+
 	    end
 	    `ADDIU: begin
 	       $display("%b: ADDIU", opcode);
 	       ALUop <= 3'b010;
 	       RegWrite <= 1;
 	       ALUSrc <= 1;
+	       Jump <= 0;
 	    end
 	    `SLTIU: begin
 	       $display("%b: SLTIU", opcode);
 	       ALUop <= 3'b111;
 	       RegWrite <= 1;
 	       ALUSrc <= 1;
+	       Jump <= 0;
 	    end
 	    `LUI: begin
 	       $display("%b: LUI", opcode);
 	       ALUop <= `ALU_add;
 	       RegWrite <= 1;
 	       ALUSrc <= 1;
+	       Jump <= 0;
 	    end
 	    `SPECIAL: begin
 	       $display("Special instruction detected: %x", instr);
 	       $display("%b: SPECIAL", opcode);
+	       Jump <= 0;
 	       case (funct)
 		 `ADD: begin
 		    $display("funct: %b: ADD", funct);
 		    RegDst <= 1;
 		    ALUop <= 3'b010;
 		    RegWrite <= 1;
+
 		 end
 		 `SUB: begin
 		    $display("funct: %b: SUB", funct);
@@ -139,15 +166,23 @@ module control(
 		      	$display("syscall exit");
 		      	$finish;
 		      end
-		      default: $display("vreg = %x, Syscall, but not a supported one!", vreg);
+		      default: begin
+		      	$display("vreg = %x, Syscall, but not a supported one!", vreg);
+		      	Jump <= 0;
+		      end
+
 		    endcase // case (vreg)
 		 end
-		 default:
+		 default: begin
 		   $display("funct: %b: That's not a supported funct!", funct);
+		   Jump <= 0;
+		   end
 	       endcase
 	    end
-	    default:
+	    default: begin
 	      $display("%b: That's not a supported instruction!", opcode);
+	      Jump <= 0;
+	      end
 	  endcase // case (opcode)
      end // if (instr != 0 && opcode !== 6'bxxxxxx)
 endmodule // control

@@ -17,7 +17,7 @@ module registers(
    assign std_out_address = register_file[4];
 
 	initial begin
-		$monitor("registerfile: sp = %x %x %x",register_file[29], write_data,write_reg);
+		$monitor("registerfile: 31 = %x %x %x",register_file[31], write_data,write_reg);
 		register_file[0] = 0;
 		data1 = 0;
 		data2 = 0;
