@@ -7,13 +7,13 @@ input [2:0] alucontrold,
 input [4:0] rsd,rtd,rdd,
 input [31:0] pcplus4d,
 input jumplinkd,
-output regwritee,memtorege,memwritee,alusrce,
-output [1:0] regdste,
-output [2:0] alucontrole,
-output [31:0] rd1e, rd2e, signimme,
-output [4:0] rse, rte, rde,
-output [31:0] pcplus4e,
-output jumplinke
+output reg regwritee,memtorege,memwritee,alusrce,
+output reg [1:0] regdste,
+output reg [2:0] alucontrole,
+output reg [31:0] rd1e, rd2e, signimme,
+output reg [4:0] rse, rte, rde,
+output reg [31:0] pcplus4e,
+output reg jumplinke
 );
 reg [31:0] rd1, rd2, signimm,pcplus4;
 reg regwrite,memtoreg,memwrite,alusrc;
@@ -39,20 +39,20 @@ initial begin
 	jumplink = 0;
 end
 //Assign:
-assign regwritee = regwrite;
-assign memtorege = memtoreg;
-assign memwritee = memwrite;
-assign alusrce = alusrc;
-assign regdste = regdst;
-assign alucontrole = alucontrol;
-assign rd1e = rd1;
-assign rd2e = rd2;
-assign signimme = signimm;
-assign rse = rs;
-assign rte = rt;
-assign rde = rd;
-assign pcplus4e = pcplus4;
-assign jumplinke = jumplink;
+// assign regwritee = regwrite;
+// assign memtorege = memtoreg;
+// assign memwritee = memwrite;
+// assign alusrce = alusrc;
+// assign regdste = regdst;
+// assign alucontrole = alucontrol;
+// assign rd1e = rd1;
+// assign rd2e = rd2;
+// assign signimme = signimm;
+// assign rse = rs;
+// assign rte = rt;
+// assign rde = rd;
+// assign pcplus4e = pcplus4;
+// assign jumplinke = jumplink;
 
 always @(posedge clk) begin
 	if(!flushe) begin
@@ -89,4 +89,24 @@ always @(posedge clk) begin
 
 	end
 end
+
+always @(negedge clk) begin
+	if(!flushe) begin
+		 regwritee = regwrite;
+		 memtorege = memtoreg;
+		 memwritee = memwrite;
+		 alusrce = alusrc;
+		 regdste = regdst;
+		 alucontrole = alucontrol;
+		 rd1e = rd1;
+		 rd2e = rd2;
+		 signimme = signimm;
+		 rse = rs;
+		 rte = rt;
+		 rde = rd;
+		 pcplus4e = pcplus4;
+		 jumplinke = jumplink;
+	end
+end
+
 endmodule

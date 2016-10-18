@@ -2,13 +2,13 @@ module id_reg(
 input clk,
 input[31:0] pcp4f,rd,
 input stalld,clr,
-output [31:0] instrD, pcp4D
+output reg [31:0] instrD, pcp4D
 );
 
 reg [31:0] instr;
 reg [31:0] pcp4;
-assign instrD = instr;
-assign pcp4D = pcp4;
+// assign instrD = instr;
+// assign pcp4D = pcp4;
 initial begin
 	// $monitor("%x,%x,%x,%x",rd,instrD,pcp4D,stalld,clr);
 	instr = 0;
@@ -23,6 +23,13 @@ always @(posedge clk) begin
 	if(clr == 1)begin
 		instr <= 0;
 		pcp4 <= 0;
+	end
+end
+
+always @(negedge clk) begin
+	if(!stalld & !clr) begin
+		instrD <= instr;
+		pcp4D <= pcp4;
 	end
 end
 endmodule

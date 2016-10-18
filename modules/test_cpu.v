@@ -10,7 +10,7 @@ module test_cpu;
 	end
 
 	initial begin
-		#125;
+		#400;
 		$finish();
 	end
 	

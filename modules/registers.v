@@ -17,13 +17,14 @@ module registers(
    assign std_out_address = register_file[4];
 
 	initial begin
-		$monitor("registerfile: 31 = %x %x %x",register_file[31], write_data,write_reg);
+		$monitor("registerfile: 31 = %x write_data = %x write_reg = %x reg_write = %x",register_file[31], write_data,write_reg,reg_write,$time);
 		register_file[0] = 0;
 		data1 = 0;
 		data2 = 0;
 	end
 
    always @(posedge clk) begin //This is for negedge read and posedge write, this is built just for the future.
+   		$display($time,"posedge write: write_data = %x write_reg = %x reg_write = %x", write_data,write_reg,reg_write);
 	    if (reg_write) 
 	    register_file[write_reg] = write_data;
    end

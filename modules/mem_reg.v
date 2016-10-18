@@ -5,11 +5,11 @@ input regwritee,memtorege,memwritee,
 input [4:0] writerege,
 input [31:0] pcplus4e,
 input jumplinke,
-output regwritem,memtoregm,memwritem,
-output [31:0] aluoutm, writedatam,
-output [4:0] writeregm,
-output [31:0] pcplus4m,
-output jumplinkm
+output reg regwritem,memtoregm,memwritem,
+output reg [31:0] aluoutm, writedatam,
+output reg [4:0] writeregm,
+output reg [31:0] pcplus4m,
+output reg jumplinkm
 );
 reg [31:0] aluout, writedata;
 reg regwrite,memtoreg,memwrite,jumplink;
@@ -29,14 +29,14 @@ initial begin
 end
 
 //Assign:
-assign regwritem = regwrite;
-assign memtoregm = memtoreg;
-assign memwritem = memwrite;
-assign aluoutm = aluout;
-assign writedatam = writedata;
-assign writeregm = writereg;
-assign pcplus4m = pcplus4;
-assign jumplinkm = jumplink;
+// assign regwritem = regwrite;
+// assign memtoregm = memtoreg;
+// assign memwritem = memwrite;
+// assign aluoutm = aluout;
+// assign writedatam = writedata;
+// assign writeregm = writereg;
+// assign pcplus4m = pcplus4;
+// assign jumplinkm = jumplink;
 
 always @(posedge clk) begin
 		 regwrite = regwritee;
@@ -47,5 +47,16 @@ always @(posedge clk) begin
 		 writereg = writerege;
 		pcplus4 = pcplus4e;
 		jumplink = jumplinke;
+end
+
+always @(negedge clk) begin
+		 regwritem = regwrite;
+		 memtoregm = memtoreg;
+		 memwritem = memwrite;
+		 aluoutm = aluout;
+		 writedatam = writedata;
+		 writeregm = writereg;
+		pcplus4m = pcplus4;
+		jumplinkm = jumplink;
 end
 endmodule

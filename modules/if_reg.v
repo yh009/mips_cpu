@@ -1,7 +1,7 @@
 module if_reg(input clk,
 	      input [31:0] pcadd,
 	      input 	   stallf,
-	      output [31:0] pcfetch);
+	      output reg [31:0] pcfetch);
 
    reg [31:0] 		    pcreg;
 
@@ -9,13 +9,19 @@ module if_reg(input clk,
       pcreg = 32'h100008;
    end
 
-   assign pcfetch = pcreg;
 
    always @(posedge clk) begin
       if(stallf != 1) begin
-	 pcreg = pcadd;
+	     pcreg = pcadd;
       end
    end
+
+   always @(negedge clk) begin
+      if(stallf != 1) begin
+         pcfetch = pcreg;
+      end
+   end
+
    
 endmodule
 

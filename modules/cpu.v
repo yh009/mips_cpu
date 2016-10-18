@@ -99,10 +99,14 @@ module cpu(input clk);
    wire [31:0] PCPlus4E;
    wire [31:0] PCPlus4M;
    wire [31:0] PCPlus4W;
+   
    wire JumpLinkD;
    wire JumpLinkE;
    wire JumpLinkM;
    wire JumpLinkW;
+
+
+   
    wire [31:0] ResultWCon;
   
 
@@ -118,7 +122,10 @@ module cpu(input clk);
 
    always @(clk)begin
    		//$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
-   		$display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4D = %x, PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4D,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
+   		$display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4W = %x,ResultW = %x , PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4W,ResultW,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
+   		$display($time,"WriteRegW = %x WriteRegE = %x", WriteRegW,WriteRegE);
+   		$display($time,"JumpLinkD = %x, JumpLinkE = %x, JumpLinkM = %x, JumpLinkW = %x", JumpLinkD,JumpLinkE,JumpLinkM,JumpLinkW);
+   		$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
    end
    
 
@@ -299,8 +306,8 @@ module cpu(input clk);
 	      MemtoRegW,
 	      ResultWCon);
   	mux mux_wb2(
-  			PCPlus4W,
   			ResultWCon,	
+  			PCPlus4W,
   			JumpLinkW,
   			ResultW);
 
