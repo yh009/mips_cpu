@@ -1,8 +1,9 @@
 `include "mips.h"
 
-module control(input [31:0] instr,
+module control(input clk,
+	       input [31:0] 	instr,
 	       input [31:0] 	vreg,
-	       input [31:0]     str, 	
+	       input [31:0] 	str, 
 	       output reg 	RegDst,
 	       output reg 	Jump,
 	       output reg 	Branch,
@@ -26,7 +27,7 @@ module control(input [31:0] instr,
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
      end
-   always @(instr)
+   always @(posedge clk)
      if (instr != 0 && opcode !== 6'bxxxxxx) 
        begin
 	  $display("control module: instruction being decoded: %x", instr);
@@ -94,6 +95,7 @@ module control(input [31:0] instr,
 	       ALUSrc <= 1;
 	    end
 	    `SPECIAL: begin
+	       $display("Special instruction detected: %x", instr);
 	       $display("%b: SPECIAL", opcode);
 	       case (funct)
 		 `ADD: begin

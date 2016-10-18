@@ -106,7 +106,8 @@ module cpu(input clk);
 		 BranchD && (EqualD1==EqualD2),
 		 instrD,
 		 PCPlus4D);
-   control control(instrD,
+   control control(clk,
+		   instrD,
 		   Syscall_Info,
 		   Std_Out,
 		   RegDstD,
