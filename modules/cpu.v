@@ -270,18 +270,6 @@ module cpu(input clk);
 		 FlushE,
 		 ForwardAE,
 		 ForwardBE);
-   //Test Code
-   initial begin
-      $monitor($time," %x %x %x %x %x %x %x %x",
-	       PC,
-	       PCPlus4F,
-	       PCPlus4D,
-	       PCF,
-	       BranchD, 
-	       EqualD1, 
-	       EqualD2, 
-	       instrD);
-   end // initial begin
 endmodule
 
 
