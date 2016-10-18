@@ -4,7 +4,8 @@ module registers(
 		 input [4:0]   write_reg,
 		 input [31:0]  write_data,
 		 input reg_write,
-		 output [31:0] read_data_1, read_data_2, sys_call_reg,std_out_address);
+		 output [31:0] read_data_1, read_data_2, 
+		 output [31:0] sys_call_reg, std_out_address);
 	
 
    reg [31:0] register_file [31:0];
@@ -26,8 +27,9 @@ module registers(
 	    if (reg_write) 
 	    register_file[write_reg] = write_data;
    end
-   always @(negedge clk) begin
-   		data1 = register_file[read_reg_1];
-	   	data2 = register_file[read_reg_2];
-   end
+   always @(negedge clk) 
+     begin
+		data1 = register_file[read_reg_1];
+		data2 = register_file[read_reg_2];
+     end
 endmodule

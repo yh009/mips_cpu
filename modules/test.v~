@@ -1,0 +1,5 @@
+module test();
+   reg clk = 0;
+   always #1 clk = ~clk;
+   cpu cpu(clk);
+endmodule // test
