@@ -120,7 +120,7 @@ module cpu(input clk);
 		  //       ResultW
 		  // //      RegWriteW,
     //         );
-    
+    $monitor($time,"cpumonitor: instrD = %x", instrD);
    end
 
    always @(clk)begin
@@ -131,13 +131,14 @@ module cpu(input clk);
    		//$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
    		//$display($time,"RegWriteD %x RegWriteE %x RegWriteM %x RegWriteW %x RegDstD %x RegDstE %x", RegWriteD, RegWriteE, RegWriteM,RegWriteW, RegDstD, RegDstE);
    		//$display($time,"PCConnn = %x, RD1_D = %x, JumpRegister = %x, PC = %x, instrD = %x, Jump = %x",PCConnn, RD1_D, JumpRegister,PC, instrD, Jump);
-   	$display($time,"PC=%x Instr = %x aluoutw = %x, readdataw = %x, MemtoRegW = %x, jumplinkw = %x",PCF,instrF,ALUOutW,ReadDataW,MemtoRegW,JumpLinkW);
+   	$display($time,"cpudisplay: PCF = %x InstrF = %x aluoutw = %x, readdataw = %x, MemtoRegW = %x, jumplinkw = %x",PCF,instrF,ALUOutW,ReadDataW,MemtoRegW,JumpLinkW);
    	//$display($time,"JumpLinkD %x, JumpLinkE %x, JumpLinkM %x JumpLinkW %x", JumpLinkD, JumpLinkE,JumpLinkM,JumpLinkW);
-   	$display($time,"instrD = %x", instrD);
-   	$display($time,"SrcAE = %x, SrcBE = %x", SrcAE, SrcBE);
-   	$display($time,"RD1_D = %x, RD1_E = %x",RD1_D, RD1_E);
-   	$display($time,"RD2_D = %x, RD2_E = %x",RD2_D, RD2_E);
-   	$display($time,"ReadReg1 = %x, ReadReg2 = %x",instrD[25:21], instrD[20:16]);
+   	$display($time,"cpudisplay: instrD = %x", instrD);
+   	$display($time,"cpudisplay: SrcAE = %x, SrcBE = %x", SrcAE, SrcBE);
+   	$display($time,"cpudisplay: RD1_D = %x, RD1_E = %x",RD1_D, RD1_E);
+   	$display($time,"cpudisplay: RD2_D = %x, RD2_E = %x",RD2_D, RD2_E);
+   	$display($time,"cpudisplay: ReadReg1 = %x, ReadReg2 = %x",instrD[25:21], instrD[20:16]);
+
    end
    
 
@@ -180,6 +181,7 @@ module cpu(input clk);
 		 PCPlus4D);
 
    control control(
+   			clk,
 		   instrD,
 		   Syscall_Info,
 		   Std_Out,

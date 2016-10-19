@@ -15,21 +15,25 @@ initial begin
 	pcp4 = 0;
 end
 
+always @(clk)begin
+	$display($time,"id_reg display: rd = %x instr = %x instrD = %x",rd,instr,instrD);
+end
+
 always @(negedge clk) begin
 	if(!stalld & !clr) begin
-		instr <= rd;
-		pcp4 <= pcp4f;
+		instr = rd;
+		pcp4 = pcp4f;
 	end
 	if(clr == 1)begin
-		instr <= 0;
-		pcp4 <= 0;
+		instr = 0;
+		pcp4 = 0;
 	end
 end
 
 always @(posedge clk) begin
 	if(!stalld & !clr) begin
-		instrD <= instr;
-		pcp4D <= pcp4;
+		instrD = instr;
+		pcp4D = pcp4;
 	end
 end
 endmodule

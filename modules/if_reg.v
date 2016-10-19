@@ -10,13 +10,13 @@ module if_reg(input clk,
    end
 
 
-   always @(posedge clk) begin
+   always @(negedge clk) begin
       if(stallf != 1) begin
 	     pcreg = pcadd;
       end
    end
 
-   always @(negedge clk) begin
+   always @(posedge clk) begin
       if(stallf != 1) begin
          pcfetch = pcreg;
       end
