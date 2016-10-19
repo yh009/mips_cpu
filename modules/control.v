@@ -182,12 +182,7 @@ module control(
 		 `SYSCALL: begin
 		    $display("Syscall: vreg == %x", vreg);
 		    syscall = 1;
-		    case (vreg)
-		      4: begin
-			 $display("areg = %x", str);
-		   
-			 $display("syscall puts %s", str);
-		      end
+	 
 		    $display("Syscall Wait",$time);
 		    #40;
 		    $display("Syscall Start",$time);
