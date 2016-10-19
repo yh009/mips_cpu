@@ -10,7 +10,11 @@ module test_cpu;
 	end
 
 	initial begin
+<<<<<<< HEAD
 		#500;
+=======
+		#250;
+>>>>>>> bcebb79d06d4dff33c6d78feca6a5a5bfc8e8120
 		$finish();
 	end
 	

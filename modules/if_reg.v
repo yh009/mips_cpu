@@ -5,7 +5,7 @@ module if_reg(input clk,
 
 
    initial begin
-      pcreg = 31'h400030;
+      pcreg = 32'h400030;
    end
 
 

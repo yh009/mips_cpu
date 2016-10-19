@@ -1,7 +1,6 @@
 `include "mips.h"
 
-module control(
-			input clk,
+module control(input clk,
 	       input [31:0] 	instr,
 	       input [31:0] 	vreg,
 	       input [31:0] 	str, 
@@ -16,15 +15,12 @@ module control(
 	       output reg 	MemWrite,
 	       output reg 	JumpLink,
 	       output reg JumpReg);
-	always @(clk) begin
-		$display($time,"control display instrD = %x",instr);
-	end
-   wire [5:0] opcode = instr [31:26];
-   wire [5:0] funct = instr [5:0];
+   
+   reg [5:0] opcode;
+   reg [5:0] funct;
+   
    initial
-
      begin
-     //$monitor($time,"control: instr:%x",instr); 
       RegDst = 2'b0;
       Jump = 1'b0;
       Branch = 1'b0;
@@ -36,21 +32,25 @@ module control(
       MemWrite = 1'b0;
       JumpLink = 0;
       JumpReg = 0;
-     end
+     end // initial begin
+   
    always @(*)
        begin
-      	RegDst= 2'b0;
-      	Jump =1'b0;
-      	Branch =1'b0;
-      	MemRead= 1'b0;
-      	MemToReg =1'b0;
-      	ALUop =3'b000;
-      	RegWrite =1'b0;
-      	ALUSrc =1'b0;
-      	MemWrite =1'b0;
-      	JumpLink =0;
-      	JumpReg =0;
-	  $display($time,"control module: instruction being decoded: %x", instr);
+      	RegDst = 2'b0;
+      	Jump = 1'b0;
+      	Branch = 1'b0;
+      	MemRead = 1'b0;
+      	MemToReg = 1'b0;
+      	ALUop = 3'b000;
+      	RegWrite = 1'b0;
+      	ALUSrc = 1'b0;
+      	MemWrite = 1'b0;
+      	JumpLink = 0;
+      	JumpReg = 0;
+	opcode = instr[31:26];
+	funct = instr[5:0];
+	  
+	$display($time," control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
 	       $display("%b: ADDI", opcode);
@@ -138,14 +138,13 @@ module control(
 		    RegDst = 1;
 		    ALUop = 3'b010;
 		    RegWrite = 1;
-
 		 end
 		 6'b100001: begin
-	       $display("%b: ADDU", funct);
-	       RegDst = 1;
-	       ALUop = 3'b010;
-	       RegWrite = 1;
-	    end
+		    $display("%b: ADDU", funct);
+		    RegDst = 1;
+		    ALUop = 3'b010;
+		    RegWrite = 1;
+		 end
 		 `SUB: begin
 		    $display("funct: %b: SUB", funct);
 		    RegDst = 1;
@@ -174,7 +173,11 @@ module control(
 		    $display("funct: %b: JR", funct);
 		    JumpReg = 1;
 		 end
+		 6'b000000: begin
+		    $display("funct: %b: NOP", funct);
+		 end
 		 `SYSCALL: begin
+		    $display("Syscall: vreg == %x", vreg);
 		    case (vreg)
 		      4: $display("syscall puts %s", str);
 		      10: begin
@@ -185,7 +188,6 @@ module control(
 		      	$display("vreg = %x, Syscall, but not a supported one!", vreg);
 		      	Jump = 0;
 		      end
-
 		    endcase // case (vreg)
 		 end
 		 default: begin
