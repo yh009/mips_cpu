@@ -19,6 +19,12 @@ always @(posedge clk) begin
 		instr <= rd;
 		pcp4 <= pcp4f;
 	end
+	else begin
+		if(stalld) begin
+			instr <= instr;
+			pcp4 <= pcp4;
+		end
+	end
 	if(clr == 1)begin
 		instr <= 0;
 		pcp4 <= 0;

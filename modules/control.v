@@ -188,7 +188,15 @@ module control(
 		   
 			 $display("syscall puts %s", str);
 		      end
-		      
+		    $display("Syscall Wait",$time);
+		    #40;
+		    $display("Syscall Start",$time);
+		    syscall = 0;
+		 	case (vreg)
+		      4: 
+		      	begin
+		      		$display("syscall puts %s", str);
+		      	end
 		      10: begin
 		      	$display("syscall exit");
 		      	$finish;
