@@ -38,6 +38,7 @@ module cpu(input clk);
    wire [31:0] Std_Out;
    wire [31:0] Std_Out_Address;
    wire [31:0] Syscall_Info;
+   wire        syscall;        
    wire [4:0]  RdD = instrD[15:11];
    wire [4:0]  RsD = instrD[25:21];
    wire [4:0]  RtD = instrD[20:16];
@@ -181,8 +182,7 @@ module cpu(input clk);
 		 instrD,
 		 PCPlus4D);
 
-   control control(
-		   instrD,
+   control control(instrD,
 		   Syscall_Info,
 		   Std_Out,
 		   RegDstD,
@@ -195,7 +195,8 @@ module cpu(input clk);
 		   ALUSrcD,
 		   MemWriteD,
 		   JumpLinkD,
-		   JumpRegister);
+		   JumpRegister,
+		   syscall);
 
    registers registers(clk,
 		       instrD[25:21],
@@ -351,6 +352,7 @@ module cpu(input clk);
 		 WriteRegE,
 		 WriteRegM,
 		 WriteRegW,
+		 syscall,
 		 StallF,
 		 StallD,
 		 ForwardAD,

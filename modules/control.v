@@ -4,7 +4,7 @@ module control(
 	       input [31:0] 	instr,
 	       input [31:0] 	vreg,
 	       input [31:0] 	str, 
-	       output reg [1:0] 	RegDst,
+	       output reg [1:0] RegDst,
 	       output reg 	Jump,
 	       output reg 	Branch,
 	       output reg 	MemRead,
@@ -14,7 +14,8 @@ module control(
 	       output reg 	ALUSrc,
 	       output reg 	MemWrite,
 	       output reg 	JumpLink,
-	       output reg JumpReg);
+	       output reg 	JumpReg,
+	       output reg 	syscall);
    
    reg [5:0] opcode;
    reg [5:0] funct;
@@ -32,6 +33,7 @@ module control(
       MemWrite = 1'b0;
       JumpLink = 0;
       JumpReg = 0;
+      syscall = 0;	
      end // initial begin
    
    always @(*)
@@ -47,8 +49,9 @@ module control(
       	MemWrite = 1'b0;
       	JumpLink = 0;
       	JumpReg = 0;
-		opcode = instr[31:26];
-		funct = instr[5:0];
+	syscall = 0;  
+	opcode = instr[31:26];
+	funct = instr[5:0];
 	  
 	$display($time," control module: instruction being decoded: %x", instr);
 	  case (opcode)
@@ -178,6 +181,7 @@ module control(
 		 end
 		 `SYSCALL: begin
 		    $display("Syscall: vreg == %x", vreg);
+		    syscall = 1;
 		    case (vreg)
 		      4: $display("syscall puts %s", str);
 		      10: begin

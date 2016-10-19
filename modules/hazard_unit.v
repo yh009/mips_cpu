@@ -2,26 +2,27 @@
 //Class
 
 module hazard (
-input BranchD,
-input MemtoRegE,
-input RegWriteE,
-input MemtoRegM,
-input RegWriteM,
-input RegWriteW,
-input [4:0] RsD,
-input [4:0] RtD,
-input [4:0] RsE,
-input [4:0] RtE,
-input [4:0] WriteRegE,
-input [4:0] WriteRegM,
-input [4:0] WriteRegW,
-output reg StallF,
-output reg StallD,
-output reg ForwardAD,
-output reg ForwardBD,
-output reg FlushE,
-output reg [1:0] ForwardAE,
-output reg [1:0] ForwardBE
+ input 		  BranchD,
+ input 		  MemtoRegE,
+ input 		  RegWriteE,
+ input 		  MemtoRegM,
+ input 		  RegWriteM,
+ input 		  RegWriteW,
+ input [4:0] 	  RsD,
+ input [4:0] 	  RtD,
+ input [4:0] 	  RsE,
+ input [4:0] 	  RtE,
+ input [4:0] 	  WriteRegE,
+ input [4:0] 	  WriteRegM,
+ input [4:0] 	  WriteRegW,
+ input 		  syscall,
+ output reg 	  StallF,
+ output reg 	  StallD,
+ output reg 	  ForwardAD,
+ output reg 	  ForwardBD,
+ output reg 	  FlushE,
+ output reg [1:0] ForwardAE,
+ output reg [1:0] ForwardBE
 );
 
    reg 		 lwstall = 0;
@@ -46,7 +47,7 @@ always @(*)
   branchstall_1 = (BranchD && RegWriteE && (WriteRegE == RsD || WriteRegE == RtD));
   branchstall_2 = (BranchD && MemtoRegM && (WriteRegM == RsD || WriteRegM == RtD));
   branchstall = branchstall_1 || branchstall_2; 
-  if (lwstall || branchstall)
+  if (lwstall || branchstall || syscall)
     begin
        StallF = 1;
        StallD = 1;
