@@ -23,6 +23,7 @@ module registers(
    		//$display($time,"JumpRegUp, data1 = %x readreg1 = %x", data1,read_reg_1);
    end
 	initial begin
+		$monitor($time,"read_data_1 = %x, read_data_2 = %x write_data = %x",read_data_1, read_data_2,write_data);
 		//$monitor("registerfile: 31 = %x write_data = %x write_reg = %x reg_write = %x",register_file[31], write_data,write_reg,reg_write,$time);
 		register_file[0] = 0;
 		data1 = 0;
@@ -34,16 +35,28 @@ module registers(
 	end
 
 
-   always @(posedge clk) begin //This is for negedge read and posedge write, this is built just for the future.
+   always @(negedge clk) begin //This is for negedge read and posedge write, this is built just for the future.
    		$display($time,"posedge write: write_data = %x write_reg = %x reg_write = %x", write_data,write_reg,reg_write);
 	    if (reg_write) 
-	    register_file[write_reg] = write_data;
+	    register_file[write_reg] <= write_data;
    end
 
-   always @(negedge clk) 
+   always @(*) 
      begin
-		data1 <= register_file[read_reg_1];
-		data2 <= register_file[read_reg_2];
+     	if(write_reg == read_reg_1) begin
+     		data1 <= write_data;
+     		data2 <= register_file[read_reg_2];
+     	end
+     	else begin
+     	if(write_reg == read_reg_2) begin
+     		data1 <= register_file[read_reg_1];
+     		data2 <= write_data;
+     	end
+     	else begin
+			data1 <= register_file[read_reg_1];
+			data2 <= register_file[read_reg_2];
+		end
+		end
      end
 
 endmodule

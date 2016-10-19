@@ -10,7 +10,7 @@ module jump(
 	reg [31:0] PCNew;
 	mux mux(PCCon,PCNew,jump,PC);
 	always @(*) begin
-		$monitor("%x,%x,%x",PCHigh, PCLow, PCNew);
+		//$monitor("%x,%x,%x",PCHigh, PCLow, PCNew);
 		PCHigh = PCPlus4[31:28];
 		PCLow = instr[25:0];
 		PCLow = PCLow << 2;

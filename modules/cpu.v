@@ -120,7 +120,7 @@ module cpu(input clk);
 		  //       ResultW
 		  // //      RegWriteW,
     //         );
-    $monitor($time,"cpumonitor: instrD = %x", instrD);
+    //$monitor($time,"cpumonitor: resultW = %x aluoutM = %x aluoutw = %x", ResultW,ALUOutM,ALUOutW);
    end
 
    always @(clk)begin
@@ -138,6 +138,7 @@ module cpu(input clk);
    	$display($time,"cpudisplay: RD1_D = %x, RD1_E = %x",RD1_D, RD1_E);
    	$display($time,"cpudisplay: RD2_D = %x, RD2_E = %x",RD2_D, RD2_E);
    	$display($time,"cpudisplay: ReadReg1 = %x, ReadReg2 = %x",instrD[25:21], instrD[20:16]);
+      $display($time,"SignImmD = %x SignImmE = %x instrD[15:0] = %x", SignImmD, SignImmE, instrD[15:0]);
 
    end
    
@@ -218,8 +219,8 @@ module cpu(input clk);
 	       EqualD2);
    idmultipurpose multi(instrD[15:0],
 			PCPlus4D,
-			SignImmD,
 			PCBranchD);
+   SignImmD smd(instrD, SignImmD);
    /////////////////
    //Execute Stage//
    /////////////////
