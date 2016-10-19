@@ -16,11 +16,11 @@ module control(input clk,
 	       output reg 	JumpLink,
 	       output reg JumpReg);
    
-   wire [5:0] opcode = instr [31:26];
-   wire [5:0] funct = instr [5:0];
+   reg [5:0] opcode;
+   reg [5:0] funct;
    
    initial
-     begin 
+     begin
       RegDst = 2'b0;
       Jump = 1'b0;
       Branch = 1'b0;
@@ -32,20 +32,24 @@ module control(input clk,
       MemWrite = 1'b0;
       JumpLink = 0;
       JumpReg = 0;
-     end
+     end // initial begin
+   
    always @(*)
        begin
-      	RegDst= 2'b0;
-      	Jump =1'b0;
-      	Branch =1'b0;
-      	MemRead= 1'b0;
-      	MemToReg =1'b0;
-      	ALUop =3'b000;
-      	RegWrite =1'b0;
-      	ALUSrc =1'b0;
-      	MemWrite =1'b0;
-      	JumpLink =0;
-      	JumpReg =0;
+      	RegDst = 2'b0;
+      	Jump = 1'b0;
+      	Branch = 1'b0;
+      	MemRead = 1'b0;
+      	MemToReg = 1'b0;
+      	ALUop = 3'b000;
+      	RegWrite = 1'b0;
+      	ALUSrc = 1'b0;
+      	MemWrite = 1'b0;
+      	JumpLink = 0;
+      	JumpReg = 0;
+	opcode = instr[31:26];
+	funct = instr[5:0];
+	  
 	$display($time," control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
