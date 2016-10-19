@@ -1,4 +1,3 @@
-`timescale 1s/1s
 `include "mux.v"
  `include "add4.v"
  `include "ALU.v"

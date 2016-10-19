@@ -11,7 +11,10 @@ module if_reg(input clk,
 
    always @(posedge clk) begin
       if(stallf != 1) begin
-	     pcreg <= pcadd;
+	   pcreg <= pcadd;
+      end
+      else begin
+      pcreg <= pcreg;
       end
    end
 
