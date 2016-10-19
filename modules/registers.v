@@ -3,7 +3,9 @@ module registers(
 		 input [4:0] read_reg_1, read_reg_2,
 		 input [4:0]   write_reg,
 		 input [31:0]  write_data,
+		 input JumpReg,
 		 input reg_write,
+
 		 output [31:0] read_data_1, read_data_2, 
 		 output [31:0] sys_call_reg, std_out_address);
 	
@@ -15,7 +17,11 @@ module registers(
    assign read_data_2 = data2;
    assign sys_call_reg = register_file[2];
    assign std_out_address = register_file[4];
+   always @(posedge JumpReg) begin
 
+   		data1 = register_file[read_reg_1];
+   		$display($time,"JumpRegUp, data1 = %x readreg1 = %x", data1,read_reg_1);
+   end
 	initial begin
 		$monitor("registerfile: 31 = %x write_data = %x write_reg = %x reg_write = %x",register_file[31], write_data,write_reg,reg_write,$time);
 		register_file[0] = 0;

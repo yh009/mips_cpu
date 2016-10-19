@@ -105,8 +105,11 @@ module cpu(input clk);
    wire JumpLinkM;
    wire JumpLinkW;
 
+   wire JumpRegister;
 
-   
+
+
+   wire [31:0] PCConnn;
    wire [31:0] ResultWCon;
   
 
@@ -122,10 +125,12 @@ module cpu(input clk);
 
    always @(clk)begin
    		//$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
-   		$display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4W = %x,ResultW = %x , PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4W,ResultW,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
-   		$display($time,"WriteRegW = %x WriteRegE = %x", WriteRegW,WriteRegE);
-   		$display($time,"JumpLinkD = %x, JumpLinkE = %x, JumpLinkM = %x, JumpLinkW = %x", JumpLinkD,JumpLinkE,JumpLinkM,JumpLinkW);
-   		$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
+   		// $display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4W = %x,ResultW = %x , PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4W,ResultW,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
+   		// $display($time,"WriteRegW = %x WriteRegE = %x", WriteRegW,WriteRegE);
+   		// $display($time,"JumpLinkD = %x, JumpLinkE = %x, JumpLinkM = %x, JumpLinkW = %x", JumpLinkD,JumpLinkE,JumpLinkM,JumpLinkW);
+   		//$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
+   		$display($time,"RegWriteD %x RegWriteE %x RegWriteM %x RegWriteW %x", RegWriteD, RegWriteE, RegWriteM,RegWriteW);
+   		$display($time,"PCConnn = %x, RD1_D = %x, JumpRegister = %x, PC = %x, instrD = %x, Jump = %x",PCConnn, RD1_D, JumpRegister,PC, instrD, Jump);
    end
    
 
@@ -134,7 +139,13 @@ module cpu(input clk);
    //Fetch Stage//
    ///////////////
 
-   jump j(instrD,PCPlus4D,PCCon,Jump,PC);
+   jump j(instrD,PCPlus4D,PCCon,Jump,PCConnn);
+
+   mux muxnew(PCConnn,
+   	RD1_D,
+   	JumpRegister,
+   	PC
+   	);
 
    mux_ini mux_if(PCPlus4F,
 	      PCBranchD,
@@ -160,6 +171,7 @@ module cpu(input clk);
 		 BranchD && (EqualD1==EqualD2),
 		 instrD,
 		 PCPlus4D);
+
    control control(
 		   instrD,
 		   Syscall_Info,
@@ -173,12 +185,15 @@ module cpu(input clk);
 		   RegWriteD,
 		   ALUSrcD,
 		   MemWriteD,
-		   JumpLinkD);
+		   JumpLinkD,
+		   JumpRegister);
+
    registers registers(clk,
 		       instrD[25:21],
 		       instrD[20:16],
 		       WriteRegW,
 		       ResultW,
+		       JumpRegister,
 		       RegWriteW,
 		       RD1_D,
 		       RD2_D,

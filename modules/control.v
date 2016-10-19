@@ -13,7 +13,8 @@ module control(
 	       output reg 	RegWrite,
 	       output reg 	ALUSrc,
 	       output reg 	MemWrite,
-	       output reg 	JumpLink);
+	       output reg 	JumpLink,
+	       output reg JumpReg);
    wire [5:0] opcode = instr [31:26];
    wire [5:0] funct = instr [5:0];
    initial 
@@ -28,6 +29,7 @@ module control(
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
       JumpLink = 0;
+      JumpReg = 0;
      end
    always @(*)
      if (instr != 0 && opcode !== 6'bxxxxxx) 
@@ -42,6 +44,7 @@ module control(
       ALUSrc = 1'b0;
       MemWrite = 1'b0;
       JumpLink = 0;
+      JumpReg = 0;
 	  $display("control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
@@ -157,7 +160,7 @@ module control(
 		 end
 		 `JR: begin
 		    $display("funct: %b: JR", funct);
-		    Jump <= 1;
+		    JumpReg <= 1;
 		 end
 		 `SYSCALL: begin
 		    case (vreg)
@@ -185,6 +188,19 @@ module control(
 	      end
 	  endcase // case (opcode)
      end // if (instr != 0 && opcode !== 6'bxxxxxx)
+     else begin
+     	RegDst = 2'b0;
+      Jump = 1'b0;
+      Branch = 1'b0;
+      MemRead = 1'b0;
+      MemToReg = 1'b0;
+      ALUop = 3'b000;
+      RegWrite = 1'b0;
+      ALUSrc = 1'b0;
+      MemWrite = 1'b0;
+      JumpLink = 0;
+      JumpReg = 0;
+     end
 endmodule // control
 
 
