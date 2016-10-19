@@ -11,7 +11,7 @@ module data_memory(
    reg [31:0] mymem [32'h100000 : 32'h101000];
    initial
    begin
-   $readmemh("hello.s", mymem);
+   $readmemh("hello.v", mymem);
    //$display("%h", mymem[5]);
    end
 

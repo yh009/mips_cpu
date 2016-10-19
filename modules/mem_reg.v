@@ -38,7 +38,7 @@ end
 // assign pcplus4m = pcplus4;
 // assign jumplinkm = jumplink;
 
-always @(posedge clk) begin
+always @(negedge clk) begin
 		 regwrite = regwritee;
 		 memtoreg = memtorege;
 		 memwrite = memwritee;
@@ -49,7 +49,7 @@ always @(posedge clk) begin
 		jumplink = jumplinke;
 end
 
-always @(negedge clk) begin
+always @(posedge clk) begin
 		 regwritem = regwrite;
 		 memtoregm = memtoreg;
 		 memwritem = memwrite;

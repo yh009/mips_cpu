@@ -129,8 +129,15 @@ module cpu(input clk);
    		// $display($time,"WriteRegW = %x WriteRegE = %x", WriteRegW,WriteRegE);
    		// $display($time,"JumpLinkD = %x, JumpLinkE = %x, JumpLinkM = %x, JumpLinkW = %x", JumpLinkD,JumpLinkE,JumpLinkM,JumpLinkW);
    		//$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
-   		$display($time,"RegWriteD %x RegWriteE %x RegWriteM %x RegWriteW %x", RegWriteD, RegWriteE, RegWriteM,RegWriteW);
-   		$display($time,"PCConnn = %x, RD1_D = %x, JumpRegister = %x, PC = %x, instrD = %x, Jump = %x",PCConnn, RD1_D, JumpRegister,PC, instrD, Jump);
+   		//$display($time,"RegWriteD %x RegWriteE %x RegWriteM %x RegWriteW %x RegDstD %x RegDstE %x", RegWriteD, RegWriteE, RegWriteM,RegWriteW, RegDstD, RegDstE);
+   		//$display($time,"PCConnn = %x, RD1_D = %x, JumpRegister = %x, PC = %x, instrD = %x, Jump = %x",PCConnn, RD1_D, JumpRegister,PC, instrD, Jump);
+   	$display($time,"PC=%x Instr = %x aluoutw = %x, readdataw = %x, MemtoRegW = %x, jumplinkw = %x",PCF,instrF,ALUOutW,ReadDataW,MemtoRegW,JumpLinkW);
+   	//$display($time,"JumpLinkD %x, JumpLinkE %x, JumpLinkM %x JumpLinkW %x", JumpLinkD, JumpLinkE,JumpLinkM,JumpLinkW);
+   	$display($time,"instrD = %x", instrD);
+   	$display($time,"SrcAE = %x, SrcBE = %x", SrcAE, SrcBE);
+   	$display($time,"RD1_D = %x, RD1_E = %x",RD1_D, RD1_E);
+   	$display($time,"RD2_D = %x, RD2_E = %x",RD2_D, RD2_E);
+   	$display($time,"ReadReg1 = %x, ReadReg2 = %x",instrD[25:21], instrD[20:16]);
    end
    
 

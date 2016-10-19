@@ -15,7 +15,7 @@ initial begin
 	pcp4 = 0;
 end
 
-always @(posedge clk) begin
+always @(negedge clk) begin
 	if(!stalld & !clr) begin
 		instr <= rd;
 		pcp4 <= pcp4f;
@@ -26,7 +26,7 @@ always @(posedge clk) begin
 	end
 end
 
-always @(negedge clk) begin
+always @(posedge clk) begin
 	if(!stalld & !clr) begin
 		instrD <= instr;
 		pcp4D <= pcp4;

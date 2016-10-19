@@ -19,33 +19,34 @@ module control(
    wire [5:0] funct = instr [5:0];
    initial 
      begin
-      RegDst = 2'b0;
-      Jump = 1'b0;
-      Branch = 1'b0;
-      MemRead = 1'b0;
-      MemToReg = 1'b0;
-      ALUop = 3'b000;
-      RegWrite = 1'b0;
-      ALUSrc = 1'b0;
-      MemWrite = 1'b0;
-      JumpLink = 0;
-      JumpReg = 0;
+      RegDst <= 2'b0;
+      Jump <= 1'b0;
+      Branch <= 1'b0;
+      MemRead <= 1'b0;
+      MemToReg <= 1'b0;
+      ALUop <= 3'b000;
+      RegWrite <= 1'b0;
+      ALUSrc <= 1'b0;
+      MemWrite <= 1'b0;
+      JumpLink <= 0;
+      JumpReg <= 0;
      end
    always @(*)
+
      if (instr != 0 && opcode !== 6'bxxxxxx) 
        begin
-       RegDst = 2'b0;
-      Jump = 1'b0;
-      Branch = 1'b0;
-      MemRead = 1'b0;
-      MemToReg = 1'b0;
-      ALUop = 3'b000;
-      RegWrite = 1'b0;
-      ALUSrc = 1'b0;
-      MemWrite = 1'b0;
-      JumpLink = 0;
-      JumpReg = 0;
-	  $display("control module: instruction being decoded: %x", instr);
+      	RegDst<= 2'b0;
+      	Jump <=1'b0;
+      	Branch <=1'b0;
+      	MemRead<= 1'b0;
+      	MemToReg <=1'b0;
+      	ALUop <=3'b000;
+      	RegWrite <=1'b0;
+      	ALUSrc <=1'b0;
+      	MemWrite <=1'b0;
+      	JumpLink <=0;
+      	JumpReg <=0;
+	  $display($time,"control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
 	       $display("%b: ADDI", opcode);
@@ -60,6 +61,7 @@ module control(
                RegWrite <= 1;
                ALUSrc <= 1;
                Jump <= 0;
+               JumpLink = 0;
 	    end
 	    `LW: begin
 	       $display("%b: LW", opcode);
@@ -134,6 +136,12 @@ module control(
 		    RegWrite <= 1;
 
 		 end
+		 6'b100001: begin
+	       $display("%b: ADDU", funct);
+	       RegDst <= 1;
+	       ALUop <= 3'b010;
+	       RegWrite <= 1;
+	    end
 		 `SUB: begin
 		    $display("funct: %b: SUB", funct);
 		    RegDst <= 1;
@@ -164,7 +172,7 @@ module control(
 		 end
 		 `SYSCALL: begin
 		    case (vreg)
-		      4: $display("%s", str);
+		      4: $display("syscall puts %s", str);
 		      10: begin
 		      	$display("syscall exit");
 		      	$finish;

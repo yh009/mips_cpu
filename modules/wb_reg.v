@@ -36,7 +36,7 @@ end
 // assign pcplus4w = pcplus4;
 // assign jumplinkw = jumplink;
 
-always @(posedge clk) begin
+always @(negedge clk) begin
 		 regwrite = regwritem;
 		 memtoreg = memtoregm;
 		 aluout = aluoutm;
@@ -47,7 +47,7 @@ always @(posedge clk) begin
 	
 end
 
-always @(negedge clk) begin
+always @(posedge clk) begin
 		 regwritew = regwrite;
 		 memtoregw= memtoreg;
 		 aluoutw = aluout;

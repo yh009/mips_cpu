@@ -54,7 +54,7 @@ end
 // assign pcplus4e = pcplus4;
 // assign jumplinke = jumplink;
 
-always @(posedge clk) begin
+always @(negedge clk) begin
 	if(!flushe) begin
 		 regwrite = regwrited;
 		 memtoreg = memtoregd;
@@ -90,7 +90,8 @@ always @(posedge clk) begin
 	end
 end
 
-always @(negedge clk) begin
+always @(posedge clk) begin
+	//$display($time,"ex_reg: rd1 = %x rd1d = %x rd1e = %x",rd1,rd1d,rd1e);
 	if(!flushe) begin
 		 regwritee = regwrite;
 		 memtorege = memtoreg;
