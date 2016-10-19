@@ -182,7 +182,6 @@ module cpu(input clk);
 		 PCPlus4D);
 
    control control(
-   			clk,
 		   instrD,
 		   Syscall_Info,
 		   Std_Out,

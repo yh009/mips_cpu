@@ -1,6 +1,6 @@
 `include "mips.h"
 
-module control(input clk,
+module control(
 	       input [31:0] 	instr,
 	       input [31:0] 	vreg,
 	       input [31:0] 	str, 
@@ -47,8 +47,8 @@ module control(input clk,
       	MemWrite = 1'b0;
       	JumpLink = 0;
       	JumpReg = 0;
-	opcode = instr[31:26];
-	funct = instr[5:0];
+		opcode = instr[31:26];
+		funct = instr[5:0];
 	  
 	$display($time," control module: instruction being decoded: %x", instr);
 	  case (opcode)
