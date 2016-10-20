@@ -182,25 +182,17 @@ module control(
 		 `SYSCALL: begin
 		    $display("Syscall: vreg == %x", vreg);
 		    syscall = 1;
+		    $display("Syscall Wait",$time);
+		    #40;
+		    $display("Syscall Start",$time);
+		    syscall = 0;
 		    case (vreg)
 		      4: begin
 			 $display("areg = %x", str);
 		   
 			 $display("syscall puts %s", str);
 		      end
-		    $display("Syscall Wait",$time);
-		    #40;
-		    $display("Syscall Start",$time);
-		    syscall = 0;
-		 	case (vreg)
-		      4: 
-		      	begin
-		      		$display("syscall puts %s", str);
-		      	end
-		      10: begin
-		      	$display("syscall exit");
-		      	$finish;
-		      end
+
 		      default: begin
 		      	$display("vreg = %x, Syscall, but not a supported one!", vreg);
 		      	Jump = 0;
