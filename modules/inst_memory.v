@@ -15,7 +15,7 @@ module inst_memory(
    always @(*)
      begin
        regout = mymem[read_addr];
-	     $display("Read Address: %x, regout = %x", read_addr, regout);
+	     //$display("Read Address: %x, regout = %x", read_addr, regout);
      end
    
 endmodule

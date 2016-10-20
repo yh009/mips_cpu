@@ -14,7 +14,7 @@ initial begin
 end
 
 always @(posedge clk) begin
-	$display($time," id posedgewrite ");
+	//$display($time," id posedgewrite ");
 	if(!stalld & !clr) begin
 		instr <= rd;
 		pcp4 <= pcp4f;

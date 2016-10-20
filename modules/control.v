@@ -16,7 +16,9 @@ module control(
 	       output reg 	JumpLink,
 	       output reg 	JumpReg,
 	       output reg 	syscall,
-	       output reg lui);
+	       output reg lui,
+	       output reg printsig,
+	       input siggot);
    
    reg [5:0] opcode;
    reg [5:0] funct;
@@ -36,6 +38,7 @@ module control(
       JumpReg = 0;
       syscall = 0;	
       lui = 0;
+      printsig = 0;
      end // initial begin
    
    always @(*)
@@ -55,18 +58,19 @@ module control(
 	syscall = 0;  
 	opcode = instr[31:26];
 	funct = instr[5:0];
+	printsig = 0;
 	  
-	$display($time," control module: instruction being decoded: %x", instr);
+	//$display($time," control module: instruction being decoded: %x", instr);
 	  case (opcode)
 	    `ADDI: begin
-	       $display("%b: ADDI", opcode);
+	       //$display("%b: ADDI", opcode);
 	       ALUop = 3'b010;
                RegWrite = 1;
                ALUSrc = 1;
                Jump = 0;
 	    end
 	    `ORI: begin
-	       $display("%b: ORI", opcode);
+	       //$display("%b: ORI", opcode);
 	       ALUop = 3'b001;
                RegWrite = 1;
                ALUSrc = 1;
@@ -74,7 +78,7 @@ module control(
                JumpLink = 0;
 	    end
 	    `LW: begin
-	       $display("%b: LW", opcode);
+	       //$display("%b: LW", opcode);
 	       MemRead = 1;
                MemToReg = 1;
 	       ALUop = 3'b010;
@@ -83,30 +87,30 @@ module control(
                Jump = 0;
 	    end  
 	    `SW: begin
-	       $display("%b: SW", opcode);
+	       //$display("%b: SW", opcode);
 	       ALUop = 3'b010;
                ALUSrc = 1;
                MemWrite = 1;
                Jump = 0;
 	    end	  
 	    `BEQ: begin
-	       $display("%b: BEQ", opcode);
+	       //$display("%b: BEQ", opcode);
 	       Branch = 1;
 	       ALUop = 3'b110;
 	       Jump = 0;
 	    end	  
 	    `BNE: begin
-	       $display("%b: BNE", opcode);
+	       //$display("%b: BNE", opcode);
 	       Branch = 1;
 	       ALUop = 3'b110;
 	       Jump = 0;
 	    end  
 	    `J: begin
-	       $display("%b: J", opcode);
+	       //$display("%b: J", opcode);
 	       Jump = 1;
 	    end
 	    `JAL: begin
-	       $display("%b: JAL", opcode);
+	       //$display("%b: JAL", opcode);
 	       Jump = 1;
 	       JumpLink = 1;
 	       RegDst = 2;
@@ -114,21 +118,21 @@ module control(
 
 	    end
 	    `ADDIU: begin
-	       $display("%b: ADDIU", opcode);
+	       //$display("%b: ADDIU", opcode);
 	       ALUop = 3'b010;
 	       RegWrite = 1;
 	       ALUSrc = 1;
 	       Jump = 0;
 	    end
 	    `SLTIU: begin
-	       $display("%b: SLTIU", opcode);
+	       //$display("%b: SLTIU", opcode);
 	       ALUop = 3'b111;
 	       RegWrite = 1;
 	       ALUSrc = 1;
 	       Jump = 0;
 	    end
 	    `LUI: begin
-	       $display("%b: LUI", opcode);
+	      // $display("%b: LUI", opcode);
 	       ALUop = `ALU_add;
 	       RegWrite = 1;
 	       ALUSrc = 1;
@@ -137,66 +141,77 @@ module control(
 
 	    end
 	    `SPECIAL: begin
-	       $display("Special instruction detected: %x", instr);
-	       $display("%b: SPECIAL", opcode);
+	       //$display("Special instruction detected: %x", instr);
+	       //$display("%b: SPECIAL", opcode);
 	       Jump = 0;
 	       case (funct)
 		 `ADD: begin
-		    $display("funct: %b: ADD", funct);
+		   // $display("funct: %b: ADD", funct);
 		    RegDst = 1;
 		    ALUop = 3'b010;
 		    RegWrite = 1;
 		 end
 		 6'b100001: begin
-		    $display("%b: ADDU", funct);
+		    //$display("%b: ADDU", funct);
 		    RegDst = 1;
 		    ALUop = 3'b010;
 		    RegWrite = 1;
 		 end
 		 `SUB: begin
-		    $display("funct: %b: SUB", funct);
+		   // $display("funct: %b: SUB", funct);
 		    RegDst = 1;
 		    ALUop = 3'b110;
 		    RegWrite = 1;
 		 end
 		 `AND: begin
-		    $display("funct: %b: AND", funct);
+		   // $display("funct: %b: AND", funct);
 		    RegDst = 1;
 		    ALUop = 3'b000;
 		    RegWrite = 1;
 		 end
 		 `OR: begin
-		    $display("funct: %b: OR", funct);
+		   // $display("funct: %b: OR", funct);
 		    RegDst = 1;
 		    ALUop = 3'b001;
 		    RegWrite = 1;
 		 end
 		 `SLT: begin
-		    $display("funct: %b: SLT", funct);
+		    //$display("funct: %b: SLT", funct);
 		    RegDst = 1;
 		    ALUop = 3'b111;
 		    RegWrite = 1;
 		 end
 		 `JR: begin
-		    $display("funct: %b: JR", funct);
+		    //$display("funct: %b: JR", funct);
 		    JumpReg = 1;
 		 end
 		 6'b000000: begin
-		    $display("funct: %b: NOP", funct);
+		    //$display("funct: %b: NOP", funct);
 		 end
 		 `SYSCALL: begin
-		    $display("Syscall: vreg == %x", vreg);
+		    //$display("Syscall: vreg == %x", vreg);
 		    syscall = 1;
-		    $display("Syscall Wait",$time);
+		   // $display("Syscall Wait",$time);
 		    #40;
-		    $display("Syscall Start",$time);
+		    //$display("Syscall Start",$time);
 		    syscall = 0;
 		    case (vreg)
 		      
 		      4: begin
-			 $display("areg = %x", str);
-		   
-			 $display("syscall puts %s", str);
+
+			 	//$display("areg = %x", str);	
+			 	printsig = 1;
+			 	syscall = 1;
+			 	if(siggot)
+			 	begin
+			 		while(siggot == 1)begin
+			 			$display("");
+			 			#5;
+			 		end
+			 		printsig = 0;
+			 		syscall = 0;
+			 	end
+			 	//$display("syscall puts %s", str);
 		      end
 		      
 		      10:begin
@@ -205,19 +220,19 @@ module control(
 		      end
 
 		      default: begin
-		      	$display("vreg = %x, Syscall, but not a supported one!", vreg);
+		      	//$display("vreg = %x, Syscall, but not a supported one!", vreg);
 		      	Jump = 0;
 		      end
 		    endcase // case (vreg)
 		 end
 		 default: begin
-		   $display("funct: %b: That's not a supported funct!", funct);
+		   //$display("funct: %b: That's not a supported funct!", funct);
 		   Jump = 0;
 		   end
 	       endcase
 	    end
 	    default: begin
-	      $display("%b: That's not a supported instruction!", opcode);
+	      //$display("%b: That's not a supported instruction!", opcode);
 	      Jump = 0;
 	      end
 	  endcase // case (opcode)

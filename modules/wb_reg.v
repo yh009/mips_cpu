@@ -37,7 +37,7 @@ end
 // assign jumplinkw <= jumplink;
 
 always @(posedge clk) begin
-		$display($time,"posedgewrite wbreg aluoutm <= %x aluout <= %x",aluoutm,aluout);
+		//$display($time,"posedgewrite wbreg aluoutm <= %x aluout <= %x",aluoutm,aluout);
 		 regwrite <= regwritem;
 		 memtoreg <= memtoregm;
 		 aluout <= aluoutm;
