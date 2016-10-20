@@ -29,7 +29,7 @@ parameter MONITOR = 0;
 integer i, j, f1, f2, p;
 initial begin
 
-    $monitor($time, "dm monitor: ALUoutM = %x, writeData = %x,readDataM = %x, Bytes = %x wa=%x mem_write = %x mem_read = %x value=%c",a,write_data,rd,char,wa,mem_write,mem_read,RAM[32'h00400090 >> 2]); 
+    $monitor($time, "dm monitor:char %c char %c ",char,RAM[32'h100026]); 
     $readmemh("hello.v", RAM);
     for (p = DATA_SEG; p < DATA_END; p++)
         RAM[p] <= 32'b0;
@@ -70,10 +70,7 @@ always @(posedge SyscallW)  begin
             1: char_reg = {23'b0, printSig, RAM[syswa][15:8]};
             0: char_reg = {23'b0, printSig, RAM[syswa][7:0]};
         endcase
-
     end
-
-    
 end
 
 wire [31:0] wa;
