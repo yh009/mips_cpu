@@ -1,4 +1,0 @@
-LUI $sp 0x7FFF
-JAL 0x0100014
-ORI $sp $sp 0xFFFC
-ADDIU $v0 $zero 0x000A
