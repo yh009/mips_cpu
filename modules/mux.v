@@ -52,7 +52,6 @@ module threemux5(input [4:0] in1,
        0: out = in1;
        1: out = in2;
        2: out = in3;
-       default: $display("Error in threemux");
      endcase // case (select)
 endmodule // threemux
 
@@ -66,7 +65,6 @@ module threemux(input [31:0] in1,
        0: out = in1;
        1: out = in2;
        2: out = in3;
-       default: $display("Error in threemux");
      endcase // case (select)
 endmodule // threemux
 

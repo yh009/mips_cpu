@@ -2,7 +2,7 @@ module inst_memory(
 	input [29:0] read_addr,
 	output[31:0] memout);
 
-   reg [31:0] mymem [32'h00100000: 32'h00100023];
+   reg [31:0] mymem [32'h00100000: 32'h00100100];
    reg [31:0] regout;
 
    assign memout = regout;
