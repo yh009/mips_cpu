@@ -8,6 +8,8 @@ input [4:0] rsd,rtd,rdd,
 input [31:0] pcplus4d,
 input jumplinkd,
 input syscalld,
+input luid,
+input [31:0] signimmupperd,
 output reg regwrite,memtoreg,memwrite,alusrc,
 output reg [1:0] regdst,
 output reg [2:0] alucontrol,
@@ -15,7 +17,9 @@ output reg [31:0] rd1, rd2, signimm,
 output reg [4:0] rs, rt, rd,
 output reg [31:0] pcplus4,
 output reg jumplink,
-output reg syscall
+output reg syscall,
+output reg lui,
+output reg [31:0] signimmupper
 );
 
 initial begin
@@ -34,6 +38,8 @@ initial begin
 	pcplus4 <= 0;
 	jumplink <= 0;
 	syscall <= 0;
+	lui<=0;
+	signimmupper<=0;
 end
 //Assign:
 // assign regwritee <= regwrite;
@@ -68,6 +74,8 @@ always @(posedge clk) begin
 		 pcplus4 <= pcplus4d;
 		 jumplink <= jumplinkd;
 		 syscall <= syscalld;
+		 lui<=luid;
+		 signimmupper<=signimmupperd;
 	end
 	else begin
 		regwrite <= 0;
@@ -85,6 +93,8 @@ always @(posedge clk) begin
 		pcplus4 <= 0;
 		jumplink <= 0;
 		syscall <= 0;
+		lui<=0;
+		signimmupper<=0;
 
 	end
 end

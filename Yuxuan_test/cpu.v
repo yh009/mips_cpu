@@ -111,6 +111,7 @@ module cpu(input clk);
 
    wire [31:0] PCConnn;
    wire [31:0] ResultWCon;
+   wire [31:0] SignImmDUpper;
   
    ///////////////////
    //////Syscall//////
@@ -204,7 +205,8 @@ module cpu(input clk);
 		   MemWriteD,
 		   JumpLinkD,
 		   JumpRegister,
-		   syscallD);
+		   syscallD,
+         luiD);
 
    registers registers(clk,
 		       instrD[25:21],
@@ -228,10 +230,15 @@ module cpu(input clk);
    idmultipurpose multi(instrD[15:0],
 			PCPlus4D,
 			PCBranchD);
-   SignImmD smd(instrD, SignImmD);
+   SignImmD smd(instrD, SignImmD, SignImmDUpper);
    /////////////////
    //Execute Stage//
    /////////////////
+   wire luiE;
+   wire [31:0] SignImmEUpper;
+   wire [31:0] ImmeUseE;
+   mux muximm(SignImmE, SignImmEUpper,luiE,ImmeUseE);
+
    ex_reg ex_reg(clk,
 		 RD1_D,
 		 RD2_D,
@@ -251,6 +258,8 @@ module cpu(input clk);
 		 PCPlus4D,
 		 JumpLinkD,
 		 syscallD,
+       luiD,
+       SignImmDUpper,
 		 RegWriteE,
 		 MemtoRegE,
 		 MemWriteE,
@@ -265,7 +274,9 @@ module cpu(input clk);
 		 RdE,
 		 PCPlus4E,
 		 JumpLinkE,
-		 syscallE
+		 syscallE,
+       luiE,
+       SignImmEUpper
 		 );
    threemux5 mux_ex1(RtE,
 	       RdE,
@@ -283,7 +294,7 @@ module cpu(input clk);
 		    ForwardBE,
 		    WriteDataE);
    mux mux_ex4(WriteDataE,
-	       SignImmE,
+	       ImmeUseE,
 	       ALUSrcE,
 	       SrcBE);
    ALU alu(SrcAE,

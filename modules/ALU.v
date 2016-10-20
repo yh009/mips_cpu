@@ -5,7 +5,7 @@ module ALU(input [31:0] read_data_1,
 	   output reg [31:0] ALU_result);
 
   reg [31:0] temp;
-  //initial //$monitor($time,"ALUMonitor: SrcAE = %x SrcBE = %x ALU_result = %x",read_data_1,read_data_2_or_immediate,ALU_result);
+  //initial $monitor($time,"ALUMonitor: SrcAE = %x SrcBE = %x ALU_result = %x",read_data_1,read_data_2_or_immediate,ALU_result);
   always @(*)
     begin
        case (ALU_control)

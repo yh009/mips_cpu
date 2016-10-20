@@ -5,11 +5,13 @@ input regwritee,memtorege,memwritee,
 input [4:0] writerege,
 input [31:0] pcplus4e,
 input jumplinke,
+input syscalle,
 output reg regwrite,memtoreg,memwrite,
 output reg [31:0] aluout, writedata,
 output reg [4:0] writereg,
 output reg [31:0] pcplus4,
-output reg jumplink
+output reg jumplink,
+output reg syscall
 );
 
 
@@ -23,6 +25,7 @@ initial begin
 	writereg <= 0;
 	pcplus4 <= 0;
 	jumplink <= 0;
+	syscall <= 0;
 end
 
 //Assign:
@@ -44,5 +47,6 @@ always @(posedge clk) begin
 		 writereg <= writerege;
 		pcplus4 <= pcplus4e;
 		jumplink <= jumplinke;
+		syscall <= syscalle;
 end
 endmodule

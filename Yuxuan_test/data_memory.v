@@ -36,7 +36,7 @@ initial begin
         //!f1 = $fopen("data.csv", "w");
         //!f2 = $fopen("stack.csv", "w");
     //!end 
-    //$monitor($time, "dm monitor: ALUoutM = %x, writeData = %x,readDataM = %x, Bytes = %x wa=%x mem_write = %x mem_read = %x value=%x",a,write_data,rd,char,wa,mem_write,mem_read,Stack[32'h3ffffffe]); 
+    $monitor($time, "dm monitor: ALUoutM = %x, writeData = %x,readDataM = %x, Bytes = %x wa=%x mem_write = %x mem_read = %x value=%c",a,write_data,rd,char,wa,mem_write,mem_read,RAM[32'h00400090 >> 2]); 
     $readmemh("hello.v", RAM);
     for (p = DATA_SEG; p < DATA_END; p++)
         RAM[p] <= 32'b0;

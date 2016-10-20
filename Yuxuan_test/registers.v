@@ -23,7 +23,7 @@ module registers(input clk,
 	
 
    always @(clk) begin
-	//$display($time, "sp=%x,ra=%x", register_file[29],register_file[31]);
+	$display($time, "registers: sp=%x,ra=%x v0=%x a0 = %x", register_file[29],register_file[31],register_file[2],register_file[4]);
 	end
    
    always @(posedge JumpReg) begin

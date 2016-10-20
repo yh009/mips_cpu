@@ -5,11 +5,13 @@ input regwritem,memtoregm,
 input [4:0] writeregm,
 input [31:0] pcplus4m,
 input jumplinkm,
+input syscallm,
 output reg regwrite,memtoreg,
 output reg [31:0] rd, aluout,
 output reg [4:0] writereg,
 output reg [31:0] pcplus4,
-output reg jumplink
+output reg jumplink,
+output reg syscall
 );
 
 initial begin
@@ -22,6 +24,7 @@ initial begin
 	writereg <= 0;
 	pcplus4 <= 0;
 	jumplink <= 0;
+	syscall <=0;
 end
 
 //Assign:
@@ -42,6 +45,7 @@ always @(posedge clk) begin
 		 writereg <= writeregm;
 		 pcplus4 <= pcplus4m;
 		 jumplink <= jumplinkm;
+		 syscall <= syscallm;
 	
 end
 

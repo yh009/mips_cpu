@@ -15,7 +15,8 @@ module control(
 	       output reg 	MemWrite,
 	       output reg 	JumpLink,
 	       output reg 	JumpReg,
-	       output reg 	syscall);
+	       output reg 	syscall,
+	       output reg lui);
    
    reg [5:0] opcode;
    reg [5:0] funct;
@@ -34,6 +35,7 @@ module control(
       JumpLink = 0;
       JumpReg = 0;
       syscall = 0;	
+      lui = 0;
      end // initial begin
    
    always @(*)
@@ -49,6 +51,7 @@ module control(
       	MemWrite = 1'b0;
       	JumpLink = 0;
       	JumpReg = 0;
+      	lui = 0;
 	syscall = 0;  
 	opcode = instr[31:26];
 	funct = instr[5:0];
@@ -130,6 +133,8 @@ module control(
 	       RegWrite = 1;
 	       ALUSrc = 1;
 	       Jump = 0;
+	       lui = 1;
+
 	    end
 	    `SPECIAL: begin
 	       $display("Special instruction detected: %x", instr);

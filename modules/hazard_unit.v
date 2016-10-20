@@ -31,13 +31,14 @@ module hazard (
    reg 		 branchstall_2 = 0;
    
 initial begin
-	StallF = 0;
-	StallD = 0;
-	ForwardAD = 0;
-	ForwardBD = 0;
-	ForwardAE = 2'b00;
-	ForwardBE = 2'b00;
-	FlushE = 0;
+	StallF <= 0;
+	StallD <= 0;
+	ForwardAD <= 0;
+	ForwardBD <= 0;
+	ForwardAE <= 2'b00;
+	ForwardBE <= 2'b00;
+	FlushE <= 0;
+	//$monitor($time,"ForwardAD = %x,ForwardBD = %x,ForwardAE = %x,ForwardBE = %x",ForwardAD,ForwardBD,ForwardAE,ForwardBE);
 end
 
 always @(*)
@@ -47,17 +48,18 @@ always @(*)
   branchstall_1 = (BranchD && RegWriteE && (WriteRegE == RsD || WriteRegE == RtD));
   branchstall_2 = (BranchD && MemtoRegM && (WriteRegM == RsD || WriteRegM == RtD));
   branchstall = branchstall_1 || branchstall_2; 
-  if (lwstall || branchstall || syscall)
+  //if (lwstall || branchstall || syscall)
+ if (lwstall || branchstall)
     begin
-       StallF = 1;
-       StallD = 1;
-       FlushE = 1;
+       StallF <= 1;
+       StallD <= 1;
+       FlushE <= 1;
     end
   else
 	begin
-	   StallF = 0;
-       StallD = 0;
-       FlushE = 0;
+	   StallF <= 0;
+       StallD <= 0;
+       FlushE <= 0;
     end
    //Logic for ForwardAD and ForwardBD
    ForwardAD = (RsD != 0) && (RsD == WriteRegM) && RegWriteM;
