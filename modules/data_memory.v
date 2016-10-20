@@ -11,7 +11,7 @@ module data_memory (
     input mem_read,
     input [31:0] a0,        
     output [31:0] rd,       
-    output reg [31:0] char [31:0],   
+    output [31:0] char,   
     input SyscallW
 );
 
@@ -25,45 +25,41 @@ initial begin
 end
 
 
-reg [31:0] char_reg;
+assign char = char_reg;
+reg [8:0] char_reg;
 reg printSig = 0;
 
-reg [31:0]phywordaddress;
+reg [1:0]sysbo;
+reg [31:0]syswa;
 
-always @(negedge clk) begin
-    reg [0]
-    while(char_reg != 0) begin
-        char
+parameter NEWLINE = 8'd10;
+
+always @(negedge clk)  begin
+    sysbo = a0[1:0];
+    syswa = a0[31:2];
+    case(sysbo)
+        3: char_reg = {23'b0, printSig, RAM[syswa][31:24]};
+        2: char_reg = {23'b0, printSig, RAM[syswa][23:16]};
+        1: char_reg = {23'b0, printSig, RAM[syswa][15:8]};
+        0: char_reg = {23'b0, printSig, RAM[syswa][7:0]};
+    endcase
+
+    while (char_reg[7:0] != 8'b0)  begin
+
+        #5;
+        if (sysbo == 3) begin
+            syswa = syswa + 1;
+        end
+        sysbo = sysbo + 1;
+        printSig = !printSig;
+        case(sysbo)
+            3: char_reg = {23'b0, printSig, RAM[syswa][31:24]};
+            2: char_reg = {23'b0, printSig, RAM[syswa][23:16]};
+            1: char_reg = {23'b0, printSig, RAM[syswa][15:8]};
+            0: char_reg = {23'b0, printSig, RAM[syswa][7:0]};
+        endcase
     end
 end
-
-// always @(negedge clk)  begin
-//     sysbo = a0[1:0];
-//     syswa = a0[31:2];
-//     case(sysbo)
-//         3: char_reg = {23'b0, printSig, RAM[syswa][31:24]};
-//         2: char_reg = {23'b0, printSig, RAM[syswa][23:16]};
-//         1: char_reg = {23'b0, printSig, RAM[syswa][15:8]};
-//         0: char_reg = {23'b0, printSig, RAM[syswa][7:0]};
-//     endcase
-
-//     while (char_reg[7:0] != 8'b0)  begin
-
-//         #5;
-//         if (sysbo == 3) begin
-//             syswa = syswa + 1;
-//         end
-//         sysbo = sysbo + 1;
-//         printSig = !printSig;
-//         case(sysbo)
-//             3: char_reg = {23'b0, printSig, RAM[syswa][31:24]};
-//             2: char_reg = {23'b0, printSig, RAM[syswa][23:16]};
-//             1: char_reg = {23'b0, printSig, RAM[syswa][15:8]};
-//             0: char_reg = {23'b0, printSig, RAM[syswa][7:0]};
-//         endcase
-//     end
-// end
-
 
 wire [31:0] wa;
 assign wa = {2'b00, a[31:2]};
