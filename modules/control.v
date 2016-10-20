@@ -186,11 +186,14 @@ module control(
 		    #40;
 		    $display("Syscall Start",$time);
 		    syscall = 0;
-		    case (vreg)
-		      4: begin
-			 $display("areg = %x", str);
-		   
-			 $display("syscall puts %s", str);
+		 	case (vreg)
+		      4: 
+		      	begin
+		      		$display("syscall puts %s", str);
+		      	end
+		      10: begin
+		      	$display("syscall exit");
+		      	$finish;
 		      end
 
 		      default: begin
