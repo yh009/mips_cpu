@@ -117,8 +117,7 @@ module cpu(input clk);
    ///////////////////
 
    wire [31:0] Syscall_Info;
-   wire syscallD,syscallE,syscallM,syscallW;
-   wire [31:0] Bytes;
+   wire syscallSig;
 
    initial begin
 //$monitor($time,"cpu monitor: aluoutm = %x writedatam = %x memwritem = %x",ALUOutM,WriteDataM,MemWriteM);
@@ -129,10 +128,9 @@ module cpu(input clk);
 		  // //      RegWriteW,
     //         );
     //$monitor($time,"cpumonitor: resultW = %x aluoutM = %x aluoutw = %x", ResultW,ALUOutM,ALUOutW);
-   //$monitor($time,"StallD and F",StallD,StallF,syscallD);
+   //$monitor($time,"StallD and F",StallD,StallF,syscallSig);
    end
 
-   always @(clk)begin
    		//$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
    		// $display($time,"JumpTest: Jump = %x, instrD = %x, PCPlus4W = %x,ResultW = %x , PCCon = %x, PC = %x RegDstE = %x RtE = %x RdE = %x JumpLinkW = %x RegWriteW = %x",Jump,instrD,PCPlus4W,ResultW,PCCon,PC,RegDstE,RtE,RdE,JumpLinkW, RegWriteW);
    		// $display($time,"WriteRegW = %x WriteRegE = %x", WriteRegW,WriteRegE);
@@ -140,7 +138,7 @@ module cpu(input clk);
    		//$display($time,"RegDstD = %x, RegDstE = %x, WriteRegE = %x, WriteRegM = %x, WriteRegW = %x", RegDstD, RegDstE,WriteRegE,WriteRegM,WriteRegW);
    		//$display($time,"RegWriteD %x RegWriteE %x RegWriteM %x RegWriteW %x RegDstD %x RegDstE %x", RegWriteD, RegWriteE, RegWriteM,RegWriteW, RegDstD, RegDstE);
    	// 	//$display($time,"PCConnn = %x, RD1_D = %x, JumpRegister = %x, PC = %x, instrD = %x, Jump = %x",PCConnn, RD1_D, JumpRegister,PC, instrD, Jump);
-   	// $display($time,"cpudisplay: PCF = %x InstrF = %x aluoutw = %x, readdataw = %x, MemtoRegW = %x, jumplinkw = %x",PCF,instrF,ALUOutW,ReadDataW,MemtoRegW,JumpLinkW);
+   	 //$display($time,"cpudisplay: PCF = %x InstrF = %x aluoutw = %x, readdataw = %x, MemtoRegW = %x, jumplinkw = %x",PCF,instrF,ALUOutW,ReadDataW,MemtoRegW,JumpLinkW);
    	// //$display($time,"JumpLinkD %x, JumpLinkE %x, JumpLinkM %x JumpLinkW %x", JumpLinkD, JumpLinkE,JumpLinkM,JumpLinkW);
    	// $display($time,"cpudisplay: instrD = %x", instrD);
    	// $display($time,"cpudisplay: SrcAE = %x, SrcBE = %x, ALUoutM = %x", SrcAE, SrcBE,ALUOutM);
@@ -149,8 +147,6 @@ module cpu(input clk);
    	// $display($time,"cpudisplay: ReadReg1 = %x, ReadReg2 = %x",instrD[25:21], instrD[20:16]);
     //   $display($time,"SignImmD = %x SignImmE = %x instrD[15:0] = %x", SignImmD, SignImmE, instrD[15:0]);
 
-   end
-   
 
    //Module Instantiations
    ///////////////
@@ -172,7 +168,7 @@ module cpu(input clk);
 
    if_reg if_reg(clk,
 		 PC,
-		 StallF || syscallD,
+		 StallF || syscallSig,
 		 PCF);
    inst_memory im(
 		  PCF[31:2],
@@ -185,7 +181,7 @@ module cpu(input clk);
    id_reg id_reg(clk,
 		 PCPlus4F,
 		 instrF,
-		 StallD || syscallD,
+		 StallD || syscallSig,
 		 BranchD && (EqualD1==EqualD2),
 		 instrD,
 		 PCPlus4D);
@@ -204,7 +200,7 @@ module cpu(input clk);
 		   MemWriteD,
 		   JumpLinkD,
 		   JumpRegister,
-		   syscallD,
+		   syscallSig,
          luiD,
          printsig,
          siggot);
@@ -244,7 +240,7 @@ module cpu(input clk);
 		 RD1_D,
 		 RD2_D,
 		 SignImmD,
-		 FlushE || syscallD,
+		 FlushE || syscallSig,
 		 RegWriteD,
 		 MemtoRegD,
 		 MemWriteD,
@@ -258,7 +254,6 @@ module cpu(input clk);
 		 RdD,
 		 PCPlus4D,
 		 JumpLinkD,
-		 syscallD,
        luiD,
        SignImmDUpper,
 		 RegWriteE,
@@ -275,7 +270,6 @@ module cpu(input clk);
 		 RdE,
 		 PCPlus4E,
 		 JumpLinkE,
-		 syscallE,
        luiE,
        SignImmEUpper
 		 );
@@ -314,7 +308,6 @@ module cpu(input clk);
 		   WriteRegE,
 		   PCPlus4E,
 		   JumpLinkE,
-		   syscallE,
 		   RegWriteM,
 		   MemtoRegM,
 		   MemWriteM,
@@ -322,8 +315,8 @@ module cpu(input clk);
 		   WriteDataM,
 		   WriteRegM,
 		   PCPlus4M,
-		   JumpLinkM,
-		   syscallM);
+		   JumpLinkM
+		   );
    //wire siggot;
    data_memory dm(clk,
 		  ALUOutM,
@@ -333,7 +326,6 @@ module cpu(input clk);
            printsig,
         	  Std_Out_Address,
 		  ReadDataM,
-        	  Bytes,
            siggot
 		);
    ///////////////////
@@ -347,15 +339,14 @@ module cpu(input clk);
 	     WriteRegM,
 	     PCPlus4M,
 	     JumpLinkM,
-	     syscallM,
 	     RegWriteW,
 	     MemtoRegW,
 	     ReadDataW,
 	     ALUOutW,
 	     WriteRegW,
 	     PCPlus4W,
-	     JumpLinkW,
-	     syscallW);
+	     JumpLinkW
+	     );
    mux mux_wb(ALUOutW,
 	      ReadDataW,
 	      MemtoRegW,
@@ -382,7 +373,7 @@ module cpu(input clk);
 		 WriteRegE,
 		 WriteRegM,
 		 WriteRegW,
-		 syscallD,
+		 syscallSig,
 		 StallF,
 		 StallD,
 		 ForwardAD,

@@ -40,7 +40,11 @@ module control(
       lui = 0;
       printsig = 0;
      end // initial begin
-   
+   always @(posedge siggot)
+   		begin
+   			printsig = 0;
+   			syscall = 0;
+   		end
    always @(*)
        begin
       	RegDst = 2'b0;
@@ -198,24 +202,15 @@ module control(
 		    case (vreg)
 		      
 		      4: begin
-
 			 	//$display("areg = %x", str);	
 			 	printsig = 1;
 			 	syscall = 1;
-			 	if(siggot)
-			 	begin
-			 		while(siggot == 1)begin
-			 			$display("");
-			 			#5;
-			 		end
-			 		printsig = 0;
-			 		syscall = 0;
 			 	end
 			 	//$display("syscall puts %s", str);
-		      end
+		      
 		      
 		      10:begin
-		      	$display("Finished!");
+		      	$display("\nFinished!");
 		      	$finish();
 		      end
 
