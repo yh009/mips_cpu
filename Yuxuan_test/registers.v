@@ -20,6 +20,11 @@ module registers(input clk,
    assign read_data_2 = data2;
    assign sys_call_reg = v0;
    assign std_out_address = a0;
+	
+
+   always @(clk) begin
+	//$display($time, "sp=%x,ra=%x", register_file[29],register_file[31]);
+	end
    
    always @(posedge JumpReg) begin
       data1 = register_file[read_reg_1];
@@ -27,6 +32,7 @@ module registers(input clk,
 
    initial 
      begin
+	$monitor($time,"$a0 = %x",register_file[4]);
 	register_file[0] = 0;
       	register_file[1] = 0;
       	register_file[2] = 0;
@@ -95,7 +101,7 @@ module registers(input clk,
 	  end
 	v0 = register_file[2];
 	a0 = register_file[4];
-     end
+   end
    
 
 endmodule

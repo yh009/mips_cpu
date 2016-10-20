@@ -1,29 +1,29 @@
 module data_memory(
-		   input clk,
+		   input 	     clk,
 		   input wire [31:0] address, 
-		   input wire [31:0]  write_data,
-		   input wire mem_write,
-		   input wire mem_read,
+		   input wire [31:0] write_data,
+		   input wire 	     mem_write,
+		   input wire 	     mem_read,
 		   input wire [31:0] std_out_address,
-		   output [31:0] read_data,
-		   output [31:0] std_out);
+		   output [31:0]     read_data,
+		   output [31:0]     std_out);
    
-   reg [31:0] mymem [32'h100000 : 32'h101000];
+   reg [31:0] 			     mymem [32'h100000 : 32'h101000];
    initial
-   begin
-   $readmemh("hello.v", mymem);
-   //$display("%h", mymem[5]);
-   end
+     begin
+	$readmemh("hello.v", mymem);
+	//$display("%h", mymem[5]);
+     end
 
    always @(posedge clk) 
-	begin
-	   if (mem_write)
-	     mymem[address] <= write_data;
-	   //Write before read or read before write
-	end
+     begin
+	if (mem_write)
+	  mymem[address] <= write_data;
+	//Write before read or read before write
+     end
 
-	assign read_data = mem_write ? write_data : mymem[address];
-	assign std_out = mymem[std_out_address];
+   assign read_data = mem_write ? write_data : mymem[address];
+   assign std_out = mymem[std_out_address];
 
 endmodule
 
