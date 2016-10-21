@@ -52,7 +52,7 @@ that determines the result to write to a register.
 very similarly to the control unit, but for hazard-specific signals.
 
 We tried to stick as close as possible to the module diagram provided in the
-problem writeup:
+problem writeup, and all additional modules are based upon it:
 ![Module Diagram](https://gitlab.bucknell.edu/klr020/CSCI_320_Project_2/raw/fbd90a5965a93114129811c5737044808993cf4a/harris_pipeline_mips_modified.png)
 
 This includes naming all our wires the same as the connecting wires depicted here,
@@ -65,6 +65,12 @@ and data_memory modules. In the event of a syscall, the value held in $v0 in the
 register module would be sent to the control module to be deciphered. If the control
 module determines that the instruction is indeed a syscall, it would use this value
 to determine its next steps, reading from data_memory if necessary.
+
+
+## Design: Jump Handling:
+Jump instructions(JR in perticular) needs some additional manipulation than branch. We designed a jump module in fetch stage for handling JR. It take the instruction
+and decide whether the RD1 or the PC should be the next PC address. 
+For JAL instruction, we basically pipelined the Jal control signal and PCPlus4 all the way to WriteBack stage to actuall write back the address needs to be linked.
 
 ## Design: Syscall Handling:
 Most of the groups doing this project would use the same way to implement the JAL and JR, but it is interesting to talk about the syscall design here.
