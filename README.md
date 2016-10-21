@@ -53,7 +53,7 @@ very similarly to the control unit, but for hazard-specific signals.
 
 We tried to stick as close as possible to the module diagram provided in the
 problem writeup:
-![Module Diagram](https://www.eg.bucknell.edu/~csci320/2016-fall/wp-content/uploads/2015/09/harris_pipeline_mips.png)
+![Module Diagram](https://gitlab.bucknell.edu/klr020/CSCI_320_Project_2/raw/fbd90a5965a93114129811c5737044808993cf4a/harris_pipeline_mips_modified.png)
 
 This includes naming all our wires the same as the connecting wires depicted here,
 as well as connecting them in the same manner shown in the image. One notable
