@@ -72,8 +72,71 @@ This project consists of lots of sub modules and a cpu to connect them together.
 For example, in control module, we have a commented section that is a test branch. To access the unit test branch, 
 The developer/user can uncomment the unit test code and then use `iverilog module_name.v -o test_module_name.o` to compile the test.
 Then `./test_module_name` to run the unit test for the specific module. Also, the unit test is a reference for how to use the specific module.
+But keep in mind, our team won't guarentee that all modules have unit tests and all unit tests work right now. As we pick the **important** one to do 
+the test and we change the inputs/outputs of the modules through the development process. If the unit test not working, pls read the code and modify the test.
+
+### Sample Unit Testing:
+```
+module test;
+   reg [31:0] instr;
+   wire RegDst;
+   wire Jump;
+   wire Branch;
+   wire MemRead;
+   wire MemToReg;
+   wire [2:0] ALUop;
+   wire       RegWrite;
+   wire       ALUSrc;
+   wire       MemWrite;
+
+   control myControl(instr,RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+   
+   initial begin
+		#10 instr=`ADD;
+		#20 instr=`BNE;
+		#20 instr=`SUB;
+		#20 instr=`JR;
+		#20 instr=`AND;
+		#20 instr=`OR;
+		#20 instr=`SLT;
+		#20 instr=`JAL;
+		#20 instr=`ADDI;
+		#20 instr=`ORI;
+		#20 instr=`LW;
+		#20 instr=`SW;
+		#20 instr=`BEQ;
+		#20 instr=`J;
+		
+		
+		//#100 $finish;
+	end
+
+	initial begin
+		$monitor($time, " RegDst=%b,Jump=%b,Branch=%b,MemRead=%b,MemToReg=%b,ALUop=%b,RegWrite=%b,ALUSrc=%b,MemWrite=%b.",
+			 RegDst,Jump,Branch,MemRead,MemToReg,ALUop,RegWrite,ALUSrc,MemWrite);
+		#10000 $finish;
+	end
+   //initial begin
+      //clk=0;
+   //end
+
+   //always #250 clk=~clk;
 
 
+endmodule
+```
+## Systematic Testing:
+Another important part of testing is the systematic testing. We can not give out a complete test branch right now. But the general idea of the systematic testing is 
+to use `$monitor` and `$display` to keep the variable on track. As the iverilog only supports one $monitor at a time, we find a way to get the variable information effectively through $display.
+Because we care the most about the variable at clk edge so we can build an always block that triggers by clk and display `$time` and variable info through the program running.
+### Sample code:
+```
+always @(clk) begin
+   	$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
+   end
+```
+In this way, we can log as many info. as we like. However, there is still some edge case that we need to precise monitoring. We still need $monitor to get the important variable information.
+By combining the `$monitor` and `$display`, we can generate the real-time logging as the program runs. In this way, we can easily debug and test systematically.
 # Compilation
 The program can be compiled with the following command:
 
