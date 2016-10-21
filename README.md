@@ -9,8 +9,9 @@ Section: 8am
 # File Structure
 All of our files for this project are contained within the folder modules. Everything
 can be done from there. There is not an abundant amount of further documentation
-because we took steps to insure that our code is well-organized and well-commented,
-but if there is any further documentation, it is contained in the docs folder.
+because we took steps to insure that our code is well-organized and well-commented.
+Any further documentation, such as our Team Contract and Progress Report, is 
+contained in the docs folder.
 
 # Pipelined MIPS CPU
 This is a simulation of a pipelined CPU written in Verilog. The system reads from
@@ -29,29 +30,32 @@ stage. The modules instantiated in each stage are as follows:
 * The Fetch Stage instantiates a multiplexor that determines the incoming PC to
 fetch from, the IF-stage pipeline state register, the instruction memory module
 that does the actual fetching from the input instruction file, and the add4 unit
-that handles the PC+4 functionality for normal program flow.
+that handles the PC+4 functionality for normal program flow. The Fetch Stage also
+contains the Jump module.
 
 * The Decode Stage instantiates the ID-stage pipeline state register, the control
 unit for signals throughout the entire pipeline, the register module containing
 the register file, two multiplexors for determining forwarding in the Decode Stage,
 and a multipurpose adder that does some sign extending and left-shifting for the
-purpose of calculating branch targets.
+purpose of calculating branch targets. The Decode Stage also has a special Sign
+Immediate module for dealing with LUI instructions.
 
 * The Execute Stage instantiates the EX-stage pipeline state register, a multiplexor
 passing on the write-register to the next stage, two three-way multiplexors for
 the purpose of forwarding, a multiplexor determining the second ALU source operand,
-and the all-important ALU itself.
+and the all-important ALU itself. There is also another multiplexor for dealing
+specifically with LUI instructions.
 
 * The Memory Stage instantiates the MEM-stage pipeline state register and the
 data_memory module that contains an implementation of a memory unit.
 
-* The WriteBack Stage instantiates the WB-pipeline state register and a multiplexor
-that determines the result to write to a register.
+* The WriteBack Stage instantiates the WB-pipeline state register and two multiplexors
+that determine the result to write to a register.
 
 * The Hazard Stage, as you would expect, instantiates the hazard unit, which acts
 very similarly to the control unit, but for hazard-specific signals.
 
-We tried to stick as close as possible to the module diagram provided in the
+We tried to stick as closely as possible to the module diagram provided in the
 problem writeup, and all additional modules are based upon it:
 ![Module Diagram](https://gitlab.bucknell.edu/klr020/CSCI_320_Project_2/raw/fbd90a5965a93114129811c5737044808993cf4a/harris_pipeline_mips_modified.png)
 
@@ -66,42 +70,56 @@ register module would be sent to the control module to be deciphered. If the con
 module determines that the instruction is indeed a syscall, it would use this value
 to determine its next steps, reading from data_memory if necessary.
 
-
 ## Design: Jump Handling:
-Jump instructions(JR in perticular) needs some additional manipulation than branch. We designed a jump module in fetch stage for handling JR. It take the instruction
-and decide whether the RD1 or the PC should be the next PC address. 
-For JAL instruction, we basically pipelined the Jal control signal and PCPlus4 all the way to WriteBack stage to actuall write back the address needs to be linked.
+Jump instructions(JR in perticular) need more additional manipulation than branch
+instructions. We designed a jump module in the Fetch Stage for handling JR instructions. 
+It takes the instructions and decides whether the next PC address should be coming
+from RD1 or PC. For JAL instructions, we basically pipelined the JAL control signal
+and PCPlus4 all the way to the WriteBack Stage in order to actually write back the 
+address that needs to be linked.
 
 ## Design: Syscall Handling:
-Most of the groups doing this project would use the same way to implement the JAL and JR, but it is interesting to talk about the syscall design here.
-The syscall in mips code is like:
+Most of the groups doing this project would likely use the same method to implement
+the JAL and JR instructions, but it is interesting to talk about the syscall design here.
+The syscall in MIPS looks like this:
 ```
 li v0, 4
 syscall
 ```
-There is no nop or things in between li and syscall. However, syscall needs v0 information in decode stage to get executed. Therefore, a hazard handling need to be done.
-Our design is pretty straight forward and simple, we send out a syscall signal then stall the ID and IF stage for 3 cycle when we see syscall. Then the v0 should be updated.
-Because we know that from EX=>MEM=>WB, there are 3 cycles, we just stall it like this. Then, we let the control module to decode the syscall. 
+There is no nop or things in between li and syscall. However, syscall needs v0's
+information in the Decode Stage to execute. Therefore, hazard handling need to be 
+done. Our design is pretty straightforward and simple. We send out a syscall signal,
+then stall the ID and IF stages for 3 cycle when that signal is received. Then the
+v0 register will be updated. Because we know that from EX=>MEM=>WB, there are 3 cycles,
+we only need to stall for 3 cycles. Finall, we let the control module decode the syscall. 
 
 ### Syscall design: Stdout and print:
-Because the information is stored in datamem, when we need to do a print, we won't use other module to handle print. In order to make the cpu complexity a little bit smaller, 
-the print is handled in data memory module. When we have syscall puts, there will be a print sig sent to the data memory. data memory gets the string address from a0 register directly.
-Though rigisters and control is in ID stage and datamem is in MEM stage, we use a wire to connect them for non-lagging information. data memory would print the string until the end nop. 
-Then there will be a signal back to control telling the control module print complete. During this time, there will be no instruction allowed to be executed. i.e. StallD and F. Though the 
-solution is brutal force, because the datamem is fast in printing out, there will be no lag during the printing. adding the signal back and forth is just for preventing purpose.
-
+Because the information is stored in data_memory, when we need to do a print, it should
+be handled there. In order to minimize the CPU's complexity, the print is handled in the
+data memory module. When we have syscall puts, there will be a print signal sent to the
+data memory. The data memory gets the string address from the a0 register directly.
+Even though registers and the control module are in the ID Stage and data_memory is in
+the MEM stage, we can use a wire to connect them for non-lagging information. Data memory
+would then print the string until the end nop. Finally, there will be a signal back to
+the control module signifying that the print is complete. During this time, no instructions
+will be allowed to execute. Though the solution is a brutal force approach, because the
+data_memory module is fast in printing out, there will be no apparent lag during the 
+printing.
 
 ## Design: Forwarding:
-All the forwardings(EX-EX, MEM-EX, and MEM-MEM) are handled in hazard unit. Their logic is correct and work correctly to support Hello World program.
+All the forwardings(EX-EX, MEM-EX, and MEM-MEM) are handled in the hazard unit. 
+Their logic is correct and works correctly so as to support the Hello World program.
 
 # Testing
 ## Unit Testing:
-This project consists of lots of sub modules and a cpu to connect them together. For each important module we write the unit test.
-For example, in control module, we have a commented section that is a test branch. To access the unit test branch, 
-The developer/user can uncomment the unit test code and then use `iverilog module_name.v -o test_module_name.o` to compile the test.
-Then `./test_module_name` to run the unit test for the specific module. Also, the unit test is a reference for how to use the specific module.
-But keep in mind, our team won't guarentee that all modules have unit tests and all unit tests work right now. As we pick the **important** one to do 
-the test and we change the inputs/outputs of the modules through the development process. If the unit test not working, pls read the code and modify the test.
+This project consists of lots of submodules and a top-level cpu to connect them together. 
+For each of the important modules we wrote unit tests. For example, in the control module, 
+we have a commented section that is a test bench. To access the unit test branch, 
+The developer/user can uncomment the unit test code and then use `iverilog module_name.v -o test_module_name.o`
+to compile the test. They can then run the test with `./test_module_name`. Also, the unit
+test acts as a reference for how to use that specific module. Do note however, our team 
+doesn't guarentee that all modules have unit tests and all unit tests work right now. 
+A lot has changed throughout development, and some tests may have been invalidated.
 
 ### Sample Unit Testing:
 ```
@@ -153,18 +171,28 @@ module test;
 
 endmodule
 ```
+
 ## Systematic Testing:
-Another important part of testing is the systematic testing. We can not give out a complete test branch right now. But the general idea of the systematic testing is 
-to use `$monitor` and `$display` to keep the variable on track. As the iverilog only supports one $monitor at a time, we find a way to get the variable information effectively through $display.
-Because we care the most about the variable at clk edge so we can build an always block that triggers by clk and display `$time` and variable info through the program running.
+Another important part of testing is systematic testing. We can not provide a complete 
+test bench right now, but the general idea of systematic testing is to use `$monitor` and 
+`$display` statements to track signals as they move throughout the system. Since iverilog 
+only supports one $monitor at a time, we found that we can get the variable information more
+effectively through $display. Because we care the most about the signals at the clock
+edge, we can build an always block that triggers with the clock and displays `$time` and
+various signal information throughout the program's runtime.
+
 ### Sample code:
 ```
 always @(clk) begin
    	$display($time,"WriteRegW = %x, ResultW = %x, RegWriteW = %x ReadDataW = %x ALUOutW = %x MemtoRegW = %x PC = %x", WriteRegW,ResultW,RegWriteW, ReadDataW, ALUOutW, MemtoRegW, PC);
    end
 ```
-In this way, we can log as many info. as we like. However, there is still some edge case that we need to precise monitoring. We still need $monitor to get the important variable information.
-By combining the `$monitor` and `$display`, we can generate the real-time logging as the program runs. In this way, we can easily debug and test systematically.
+Using this approach, we can log as much info as we like. However, there are still some
+edge cases that we need to precisely monitor. We will still need $monitor to get the important
+signal information in these cases. By combining the `$monitor` and `$display` statements,
+we can generate real-time signal logging as the program runs. In this way, we can easily
+debug and test systematically.
+
 # Compilation
 The program can be compiled with the following command:
 
