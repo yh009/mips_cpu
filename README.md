@@ -67,7 +67,12 @@ module determines that the instruction is indeed a syscall, it would use this va
 to determine its next steps, reading from data_memory if necessary.
 
 # Testing
-*SECTION NEEDED*
+## Unit Testing:
+This project consists of lots of sub modules and a cpu to connect them together. For each important module we write the unit test.
+For example, in control module, we have a commented section that is a test branch. To access the unit test branch, 
+The developer/user can uncomment the unit test code and then use `iverilog module_name.v -o test_module_name.o` to compile the test.
+Then `./test_module_name` to run the unit test for the specific module. Also, the unit test is a reference for how to use the specific module.
+
 
 # Compilation
 The program can be compiled with the following command:
