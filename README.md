@@ -91,6 +91,9 @@ Then there will be a signal back to control telling the control module print com
 solution is brutal force, because the datamem is fast in printing out, there will be no lag during the printing. adding the signal back and forth is just for preventing purpose.
 
 
+## Design: Forwarding:
+All the forwardings(EX-EX, MEM-EX, and MEM-MEM) are handled in hazard unit. Their logic is correct and work correctly to support Hello World program.
+
 # Testing
 ## Unit Testing:
 This project consists of lots of sub modules and a cpu to connect them together. For each important module we write the unit test.
