@@ -66,6 +66,25 @@ register module would be sent to the control module to be deciphered. If the con
 module determines that the instruction is indeed a syscall, it would use this value
 to determine its next steps, reading from data_memory if necessary.
 
+## Design: Syscall Handling:
+Most of the groups doing this project would use the same way to implement the JAL and JR, but it is interesting to talk about the syscall design here.
+The syscall in mips code is like:
+```
+li v0, 4
+syscall
+```
+There is no nop or things in between li and syscall. However, syscall needs v0 information in decode stage to get executed. Therefore, a hazard handling need to be done.
+Our design is pretty straight forward and simple, we send out a syscall signal then stall the ID and IF stage for 3 cycle when we see syscall. Then the v0 should be updated.
+Because we know that from EX=>MEM=>WB, there are 3 cycles, we just stall it like this. Then, we let the control module to decode the syscall. 
+
+### Syscall design: Stdout and print:
+Because the information is stored in datamem, when we need to do a print, we won't use other module to handle print. In order to make the cpu complexity a little bit smaller, 
+the print is handled in data memory module. When we have syscall puts, there will be a print sig sent to the data memory. data memory gets the string address from a0 register directly.
+Though rigisters and control is in ID stage and datamem is in MEM stage, we use a wire to connect them for non-lagging information. data memory would print the string until the end nop. 
+Then there will be a signal back to control telling the control module print complete. During this time, there will be no instruction allowed to be executed. i.e. StallD and F. Though the 
+solution is brutal force, because the datamem is fast in printing out, there will be no lag during the printing. adding the signal back and forth is just for preventing purpose.
+
+
 # Testing
 ## Unit Testing:
 This project consists of lots of sub modules and a cpu to connect them together. For each important module we write the unit test.
